@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc --noEmit)",
+      "Read(//c/Program Files/nodejs//**)",
+      "Read(//c/Users/SEN VON DOOM/AppData/Roaming/**)",
+      "Read(//c//**)",
+      "Read(//c/Users/SEN VON DOOM/AppData/**)",
+      "Bash(export PATH=\"$PATH:/c/Program Files/nodejs\")",
+      "Bash(node node_modules/.bin/tsc --noEmit)",
+      "Bash(grep -E \"\\\\.\\(tsx|ts|css\\)$\")",
+      "Bash(npm --version)",
+      "Bash(npm install:*)",
+      "Bash(find 'c:\\\\Users\\\\SEN VON DOOM\\\\OneDrive\\\\Desktop\\\\RVP_Proj\\\\Revpit-V1\\\\revpit\\\\src\\\\components' -name *.tsx -type f)"
+    ]
+  }
+}

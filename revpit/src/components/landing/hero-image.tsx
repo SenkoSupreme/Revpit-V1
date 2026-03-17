@@ -38,10 +38,9 @@ export function HeroImage() {
         style={{ position: 'absolute', inset: '-25%', willChange: 'transform' }}
       >
         <Image
-          src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1600&q=80"
+          src="/images/landing.png"
           alt=""
           fill
-          unoptimized
           priority
           sizes="100vw"
           style={{ objectFit: 'cover', objectPosition: 'center 40%' }}

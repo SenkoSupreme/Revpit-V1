@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import type { LucideIcon } from 'lucide-react';
 import {
   LayoutDashboard,
@@ -81,23 +82,27 @@ export function SidebarClient({ profile }: { profile: SidebarProfile }) {
 
   // ── Logo section ─────────────────────────────────────────────────────────────
   const logoSection = (
-    <div style={{ padding: '20px 18px 18px', borderBottom: '1px solid rgba(255,255,255,0.08)', flexShrink: 0 }}>
-      <Link href="/dashboard" className={`${styles.logoLink} ${mounted ? styles.logo : ''}`}>
-        {/* Diamond icon */}
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" style={{ flexShrink: 0 }}>
-          <path d="M10 2L18 10L10 18L2 10L10 2Z" fill="#C8FF00" />
-          <path d="M10 7L13 10L10 13L7 10L10 7Z" fill="#0E0D0C" />
-        </svg>
-        <span style={{
-          fontFamily:    'var(--font-display)',
-          fontSize:      22,
-          letterSpacing: '0.05em',
-          color:         '#F5F4F0',
-          lineHeight:    1,
-        }}>
-          REVPIT
-        </span>
-      </Link>
+    <div style={{ flexShrink: 0 }}>
+      <div style={{ padding: '16px 20px 12px', display: 'flex', justifyContent: 'flex-start' }}>
+        <Link href="/dashboard" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+          <Image
+            src="/images/logo-dark.png"
+            alt="REVPIT"
+            width={1059}
+            height={812}
+            style={{
+              height:    '52px',
+              width:     'auto',
+              objectFit: 'contain',
+              display:   'block',
+              filter:    'invert(1) drop-shadow(0 0 6px rgba(200,255,0,0.3))',
+            }}
+            priority
+          />
+        </Link>
+      </div>
+      {/* Lime glow divider */}
+      <div className="sidebar-glow-line" />
     </div>
   );
 

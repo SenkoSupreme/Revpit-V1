@@ -72,28 +72,21 @@ export default function SignUpPage() {
       }}
     >
       {/* Logo */}
-      <div style={{ marginBottom: 32, textAlign: 'center' }}>
+      <div style={{ marginBottom: 36, textAlign: 'center' }}>
         <Image
-          src="/images/logo-white.png"
+          src="/images/logo-icon.png"
           alt="REVPIT"
-          width={160}
-          height={46}
+          width={1136}
+          height={770}
           priority
-          style={{ width: 160, height: 'auto', display: 'inline-block' }}
-        />
-        <span
           style={{
-            fontFamily: '"JetBrains Mono", monospace',
-            fontSize: 10,
-            letterSpacing: '0.18em',
-            color: '#504F4B',
-            textTransform: 'uppercase',
-            display: 'block',
-            marginTop: 8,
+            height:    '72px',
+            width:     'auto',
+            display:   'inline-block',
+            objectFit: 'contain',
+            filter:    'brightness(1.1) drop-shadow(0 0 14px rgba(200,255,0,0.28))',
           }}
-        >
-          Motorsport Platform
-        </span>
+        />
       </div>
 
       <SignUp

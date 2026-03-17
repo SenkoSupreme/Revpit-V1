@@ -90,78 +90,62 @@ export default async function LeaderboardPage() {
     <PageTransition>
     <div style={{ minHeight: '100vh', backgroundColor: black, position: 'relative' }}>
 
-      {/* Sports car silhouette watermark — fixed, right-bottom, opacity 0.025 */}
-      <div
-        aria-hidden="true"
-        style={{
-          position:      'fixed',
-          right:         0,
-          bottom:        0,
-          width:         500,
-          pointerEvents: 'none',
-          zIndex:        0,
-          opacity:       0.025,
-        }}
-      >
+      {/* Sports car silhouette watermark */}
+      <div aria-hidden="true" style={{
+        position: 'fixed', right: 0, bottom: 0, width: 500,
+        pointerEvents: 'none', zIndex: 0, opacity: 0.025,
+      }}>
         <svg viewBox="0 0 500 200" xmlns="http://www.w3.org/2000/svg">
-          {/* Car body */}
-          <path
-            d="M0,165 L0,140 L35,118 L75,82
-               Q115,48 175,36
-               Q240,24 305,34
-               Q355,42 395,68
-               L435,92 L468,118 L480,135 L480,158
-               Q462,175 415,178 Q368,178 348,158
-               L158,158
-               Q138,175 95,178 Q52,178 30,162 Z"
-            fill="#C8FF00"
-          />
-          {/* Front wheel arch cutout + wheel */}
+          <path d="M0,165 L0,140 L35,118 L75,82 Q115,48 175,36 Q240,24 305,34 Q355,42 395,68 L435,92 L468,118 L480,135 L480,158 Q462,175 415,178 Q368,178 348,158 L158,158 Q138,175 95,178 Q52,178 30,162 Z" fill="#C8FF00" />
           <circle cx="105" cy="162" r="30" fill="#C8FF00" />
           <circle cx="105" cy="162" r="16" fill="#0E0D0C" />
-          {/* Rear wheel arch cutout + wheel */}
           <circle cx="385" cy="162" r="30" fill="#C8FF00" />
           <circle cx="385" cy="162" r="16" fill="#0E0D0C" />
-          {/* Windshield */}
-          <path
-            d="M175,80 Q192,46 218,40 L272,34 L276,72 Z"
-            fill="#0E0D0C"
-            opacity="0.55"
-          />
+          <path d="M175,80 Q192,46 218,40 L272,34 L276,72 Z" fill="#0E0D0C" opacity="0.55" />
         </svg>
       </div>
 
       {/* ── Hero header ──────────────────────────────────────────────────────── */}
-      <div
-        style={{
-          borderBottom: `1px solid ${grey[700]}`,
-          padding: '48px 48px 40px',
-          backgroundImage: `radial-gradient(circle, ${grey[700]}33 1px, transparent 1px)`,
-          backgroundSize: '32px 32px',
-        }}
-      >
-        <div style={{ maxWidth: 900 }}>
+      <div style={{
+        position:     'relative',
+        background:   `linear-gradient(135deg, #0E0D0C 0%, #111110 50%, #0A0908 100%)`,
+        borderBottom: `1px solid rgba(200,255,0,0.08)`,
+        padding:      '44px 48px 40px',
+        overflow:     'hidden',
+      }}>
+        <div
+          aria-hidden="true"
+          className="cyber-grid-bg"
+          style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: 0.8 }}
+        />
+        <div className="scan-sweep" aria-hidden="true" />
+        <div className="speed-streaks" aria-hidden="true" />
+
+        {/* Corner bracket */}
+        <div aria-hidden="true" style={{ position: 'absolute', top: 16, right: 48, opacity: 0.15 }}>
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <path d="M40 0H20V4H36V20H40V0Z" fill={accent} />
+            <path d="M0 40H20V36H4V20H0V40Z" fill={accent} />
+          </svg>
+        </div>
+
+        <div style={{ maxWidth: 900, position: 'relative', zIndex: 2 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-              <path d="M5 11h4V3H5v8z" fill={accent} />
-              <path d="M1.5 5.5L3 7l-1.5 1.5M12.5 5.5L11 7l1.5 1.5" stroke={accent} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            <span style={{ fontFamily: mono, fontSize: 9, fontWeight: 700, letterSpacing: '0.18em', color: accent, textTransform: 'uppercase' }}>
-              LIVE STANDINGS
+            <span className="live-dot" />
+            <span style={{ fontFamily: mono, fontSize: 8, fontWeight: 700, letterSpacing: '0.22em', color: accent, textTransform: 'uppercase' }}>
+              REVPIT · LIVE STANDINGS
             </span>
           </div>
 
-          <h1
-            style={{
-              fontFamily: display,
-              fontSize: 60,
-              letterSpacing: '0.03em',
-              color: white,
-              lineHeight: 0.9,
-              margin: '0 0 16px',
-            }}
-          >
-            GLOBAL LEADERBOARD
+          <h1 style={{
+            fontFamily:    display,
+            fontSize:      'clamp(44px, 5.5vw, 72px)',
+            letterSpacing: '0.03em',
+            color:         white,
+            lineHeight:    0.9,
+            margin:        '0 0 16px',
+          }}>
+            LEADERBOARD
           </h1>
 
           <p style={{ fontFamily: body, fontSize: 14, color: grey[500], lineHeight: 1.6, maxWidth: 520 }}>
@@ -171,6 +155,94 @@ export default async function LeaderboardPage() {
         </div>
       </div>
 
+      {/* ── TOP 3 PODIUM ─────────────────────────────────────────────────────── */}
+      {rows.length >= 3 && (
+        <div style={{
+          padding: '48px 48px 0',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'flex-end',
+          gap: 24,
+        }}>
+          {/* Position 2 — left */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+            <div style={{
+              fontFamily: display, fontSize: 80, color: '#9A9690',
+              opacity: 0.08, lineHeight: 1, marginBottom: -20,
+            }} aria-hidden="true">2</div>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontFamily: display, fontSize: 20, color: white, letterSpacing: '0.04em' }}>
+                {rows[1].username.toUpperCase()}
+              </div>
+              <div style={{ fontFamily: mono, fontSize: 14, color: grey[500] }}>
+                {rows[1].score.toLocaleString()}
+              </div>
+            </div>
+            <div style={{
+              width: 80, height: 56, background: `linear-gradient(180deg, #2A2928, #1A1918)`,
+              border: `1px solid ${grey[700]}`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              <span style={{ fontFamily: display, fontSize: 28, color: '#9A9690' }}>2</span>
+            </div>
+          </div>
+
+          {/* Position 1 — centre (elevated) */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+            <span style={{
+              padding: '3px 12px', background: '#D4A500',
+              fontFamily: display, fontSize: 11, color: '#0A0908',
+              letterSpacing: '0.1em',
+            }}>
+              CHAMPION
+            </span>
+            <div style={{
+              fontFamily: display, fontSize: 100, color: '#D4A500',
+              opacity: 0.08, lineHeight: 1, marginBottom: -24,
+            }} aria-hidden="true">1</div>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontFamily: display, fontSize: 24, color: white, letterSpacing: '0.04em' }}>
+                {rows[0].username.toUpperCase()}
+              </div>
+              <div style={{ fontFamily: mono, fontSize: 16, fontWeight: 700, color: '#D4A500' }}>
+                {rows[0].score.toLocaleString()}
+              </div>
+            </div>
+            <div style={{
+              width: 96, height: 72, background: `linear-gradient(180deg, #1A1408, #0C0A04)`,
+              border: `1px solid #D4A50066`,
+              boxShadow: '0 0 24px rgba(212,165,0,0.3)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              <span style={{ fontFamily: display, fontSize: 36, color: '#D4A500' }}>1</span>
+            </div>
+          </div>
+
+          {/* Position 3 — right */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+            <div style={{
+              fontFamily: display, fontSize: 80, color: '#CC7A30',
+              opacity: 0.08, lineHeight: 1, marginBottom: -20,
+            }} aria-hidden="true">3</div>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontFamily: display, fontSize: 20, color: white, letterSpacing: '0.04em' }}>
+                {rows[2].username.toUpperCase()}
+              </div>
+              <div style={{ fontFamily: mono, fontSize: 14, color: '#CC7A30' }}>
+                {rows[2].score.toLocaleString()}
+              </div>
+            </div>
+            <div style={{
+              width: 72, height: 44, background: `linear-gradient(180deg, #2A1A0A, #1A0E05)`,
+              border: `1px solid #CC7A3066`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              <span style={{ fontFamily: display, fontSize: 24, color: '#CC7A30' }}>3</span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ── Table ────────────────────────────────────────────────────────────── */}
       <div style={{ padding: '32px 48px' }}>
         <LeaderboardTable rows={rows} />
@@ -178,51 +250,33 @@ export default async function LeaderboardPage() {
 
       {/* ── Bottom widgets (only when logged in) ─────────────────────────────── */}
       {myScore && (
-        <div
-          className="rp-lb-widgets"
-          style={{
-            gap: 16,
-            padding: '0 48px 48px',
-          }}
-        >
-          {/* Active Circuits */}
-          <div
-            style={{
-              backgroundColor: grey[900],
-              border: `1px solid ${grey[700]}`,
-              borderRadius: 6,
-              padding: '20px 24px',
-            }}
-          >
-            <p style={{ fontFamily: mono, fontSize: 9, letterSpacing: '0.14em', color: grey[500], textTransform: 'uppercase', marginBottom: 10 }}>
+        <div className="rp-lb-widgets" style={{ gap: 16, padding: '0 48px 48px' }}>
+          <div className="cyber-card" style={{ padding: '20px 24px' }}>
+            <p style={{ fontFamily: mono, fontSize: 8, letterSpacing: '0.16em', color: grey[700], textTransform: 'uppercase', marginBottom: 10 }}>
               ACTIVE CIRCUITS
             </p>
             <p style={{ fontFamily: display, fontSize: 22, letterSpacing: '0.04em', color: white, marginBottom: 6 }}>
               Season Active
             </p>
-            <p style={{ fontFamily: mono, fontSize: 10, color: grey[500] }}>
-              Rankings updating live
-            </p>
+            <p style={{ fontFamily: mono, fontSize: 10, color: grey[500] }}>Rankings updating live</p>
           </div>
 
-          {/* Your Position */}
           <div
+            className="cyber-card"
             style={{
-              backgroundColor: grey[900],
-              border: `1px solid ${accent}55`,
-              borderRadius: 6,
-              padding: '20px 24px',
-              boxShadow: `0 0 0 1px ${accent}11`,
+              padding:   '20px 24px',
+              border:    `1px solid rgba(200,255,0,0.25)`,
+              boxShadow: '0 0 16px rgba(200,255,0,0.06)',
             }}
           >
-            <p style={{ fontFamily: mono, fontSize: 9, letterSpacing: '0.14em', color: grey[500], textTransform: 'uppercase', marginBottom: 10 }}>
+            <p style={{ fontFamily: mono, fontSize: 8, letterSpacing: '0.16em', color: grey[700], textTransform: 'uppercase', marginBottom: 10 }}>
               YOUR POSITION
             </p>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 4 }}>
               <span style={{ fontFamily: display, fontSize: 38, letterSpacing: '0.04em', color: white, lineHeight: 1 }}>
                 {cp?.global_rank != null ? `#${cp.global_rank.toLocaleString()}` : '—'}
               </span>
-              <span style={{ fontFamily: mono, fontSize: 11, fontWeight: 700, color: accent }}>
+              <span style={{ fontFamily: mono, fontSize: 11, fontWeight: 700, color: accent, textShadow: '0 0 12px rgba(200,255,0,0.4)' }}>
                 {myScore.score.toLocaleString()} PTS
               </span>
             </div>
@@ -231,24 +285,14 @@ export default async function LeaderboardPage() {
             </p>
           </div>
 
-          {/* Showing */}
-          <div
-            style={{
-              backgroundColor: grey[900],
-              border: `1px solid ${grey[700]}`,
-              borderRadius: 6,
-              padding: '20px 24px',
-            }}
-          >
-            <p style={{ fontFamily: mono, fontSize: 9, letterSpacing: '0.14em', color: grey[500], textTransform: 'uppercase', marginBottom: 10 }}>
+          <div className="cyber-card" style={{ padding: '20px 24px' }}>
+            <p style={{ fontFamily: mono, fontSize: 8, letterSpacing: '0.16em', color: grey[700], textTransform: 'uppercase', marginBottom: 10 }}>
               SHOWING
             </p>
             <p style={{ fontFamily: display, fontSize: 38, letterSpacing: '0.04em', color: white, marginBottom: 4, lineHeight: 1 }}>
               TOP {rows.length}
             </p>
-            <p style={{ fontFamily: mono, fontSize: 10, color: grey[500] }}>
-              Of all registered pilots
-            </p>
+            <p style={{ fontFamily: mono, fontSize: 10, color: grey[500] }}>Of all registered pilots</p>
           </div>
         </div>
       )}

@@ -89,38 +89,33 @@ export default async function ProfilePage() {
   const tierBg    = TIER_BG[tier];
 
   const stats = [
-    { label: 'SCORE',        value: profile.score.toLocaleString(),                          color: accent  },
-    { label: 'RANK',         value: profile.global_rank != null ? `#${profile.global_rank}` : '—', color: white  },
-    { label: 'QUESTS DONE',  value: String(profile.quest_completions ?? 0),                  color: white  },
-    { label: 'COMMUNITY XP', value: (profile.community_score ?? 0).toLocaleString(),         color: white  },
-    { label: 'FOLLOWERS',    value: (profile.social_followers ?? 0).toLocaleString(),         color: white  },
-    { label: 'CLUB ACTIVITY',value: String(profile.club_activity ?? 0),                      color: white  },
+    { label: 'SCORE',        value: profile.score.toLocaleString(),                          color: accent },
+    { label: 'RANK',         value: profile.global_rank != null ? `#${profile.global_rank}` : '—', color: white },
+    { label: 'QUESTS DONE',  value: String(profile.quest_completions ?? 0),                  color: white },
+    { label: 'COMMUNITY XP', value: (profile.community_score ?? 0).toLocaleString(),         color: white },
+    { label: 'FOLLOWERS',    value: (profile.social_followers ?? 0).toLocaleString(),        color: white },
+    { label: 'CLUB ACTIVITY',value: String(profile.club_activity ?? 0),                     color: white },
   ];
 
   return (
     <PageTransition>
     <div style={{ minHeight: '100vh', backgroundColor: black }}>
 
-      {/* ── Hero banner ─────────────────────────────────────────────────────── */}
+      {/* ── Cyber hero banner ───────────────────────────────────────────────── */}
       <div
         style={{
-          position:   'relative',
-          background: `linear-gradient(135deg, #0E0D0C 0%, #1C1B19 50%, #0E0D0C 100%)`,
-          borderBottom: `1px solid rgba(255,255,255,0.06)`,
-          padding:    '40px 48px 32px',
-          overflow:   'hidden',
+          position:     'relative',
+          background:   `linear-gradient(135deg, #0E0D0C 0%, #111110 50%, #0A0908 100%)`,
+          borderBottom: `1px solid rgba(200,255,0,0.08)`,
+          padding:      '40px 48px 36px',
+          overflow:     'hidden',
         }}
       >
-        {/* Grid dots */}
+        {/* Cyber grid */}
         <div
           aria-hidden="true"
-          style={{
-            position:        'absolute',
-            inset:           0,
-            backgroundImage: `radial-gradient(circle, rgba(200,255,0,0.06) 1px, transparent 1px)`,
-            backgroundSize:  '28px 28px',
-            pointerEvents:   'none',
-          }}
+          className="cyber-grid-bg"
+          style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: 0.6 }}
         />
 
         {/* Speed streaks */}
@@ -146,22 +141,18 @@ export default async function ProfilePage() {
           ))}
         </svg>
 
-        {/* Scan line sweep */}
-        <div
-          aria-hidden="true"
-          style={{
-            position:   'absolute',
-            left:       0,
-            right:      0,
-            top:        0,
-            height:     2,
-            background: 'linear-gradient(90deg, transparent 0%, rgba(200,255,0,0.15) 50%, transparent 100%)',
-            animation:  'rp-scanline 4s linear infinite',
-            pointerEvents: 'none',
-          }}
-        />
+        {/* Scan sweep */}
+        <div className="scan-sweep" aria-hidden="true" />
 
-        <div style={{ position: 'relative', display: 'flex', alignItems: 'flex-end', gap: 28, flexWrap: 'wrap' }}>
+        {/* Corner bracket */}
+        <div aria-hidden="true" style={{ position: 'absolute', top: 16, right: 48, opacity: 0.15 }}>
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <path d="M40 0H20V4H36V20H40V0Z" fill={accent} />
+            <path d="M0 40H20V36H4V20H0V40Z" fill={accent} />
+          </svg>
+        </div>
+
+        <div style={{ position: 'relative', zIndex: 2, display: 'flex', alignItems: 'flex-end', gap: 28, flexWrap: 'wrap' }}>
 
           {/* Avatar */}
           <div style={{ position: 'relative', flexShrink: 0 }}>
@@ -206,8 +197,8 @@ export default async function ProfilePage() {
                 fontSize:        8,
                 letterSpacing:   '0.12em',
                 padding:         '3px 8px',
-                borderRadius:    2,
                 whiteSpace:      'nowrap',
+                clipPath:        'polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 0 100%)',
               }}
             >
               {tier.toUpperCase()}
@@ -216,10 +207,14 @@ export default async function ProfilePage() {
 
           {/* Name + bio */}
           <div style={{ flex: 1, minWidth: 0, paddingBottom: 6 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+              <span className="live-dot" style={{ width: 5, height: 5 }} />
+              <span style={{ fontFamily: mono, fontSize: 8, letterSpacing: '0.2em', color: grey[700] }}>PILOT PROFILE</span>
+            </div>
             <h1
               style={{
                 fontFamily:    display,
-                fontSize:      38,
+                fontSize:      'clamp(32px, 4vw, 48px)',
                 letterSpacing: '0.04em',
                 color:         white,
                 lineHeight:    1,
@@ -229,16 +224,7 @@ export default async function ProfilePage() {
               {profile.username}
             </h1>
             {profile.bio && (
-              <p
-                style={{
-                  fontFamily: body,
-                  fontSize:   14,
-                  color:      grey[500],
-                  marginTop:  8,
-                  lineHeight: 1.5,
-                  maxWidth:   520,
-                }}
-              >
+              <p style={{ fontFamily: body, fontSize: 14, color: grey[500], marginTop: 8, lineHeight: 1.5, maxWidth: 520 }}>
                 {profile.bio}
               </p>
             )}
@@ -252,35 +238,20 @@ export default async function ProfilePage() {
           {/* Profile gauge + edit */}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, flexShrink: 0 }}>
             <ProfileGauge value={profile.profile_completion ?? 0} />
-            <Link
-              href="/settings"
-              style={{
-                display:         'flex',
-                alignItems:      'center',
-                justifyContent:  'center',
-                height:          30,
-                padding:         '0 16px',
-                border:          `1px solid ${grey[700]}`,
-                borderRadius:    3,
-                fontFamily:      mono,
-                fontSize:        9,
-                letterSpacing:   '0.12em',
-                color:           grey[500],
-                textDecoration:  'none',
-              }}
-            >
+            <Link href="/settings" className="cyber-btn-ghost" style={{ height: 30, padding: '0 16px', fontSize: 9 }}>
               EDIT PROFILE
             </Link>
           </div>
         </div>
       </div>
 
-      {/* ── Stats grid ──────────────────────────────────────────────────────── */}
+      {/* ── Stats strip ─────────────────────────────────────────────────────── */}
       <div
         style={{
           display:             'grid',
           gridTemplateColumns: 'repeat(6, 1fr)',
-          borderBottom:        `1px solid rgba(255,255,255,0.06)`,
+          borderBottom:        `1px solid rgba(200,255,0,0.06)`,
+          background:          '#0F0E0C',
         }}
       >
         {stats.map(({ label, value, color }, i) => (
@@ -288,7 +259,7 @@ export default async function ProfilePage() {
             key={label}
             style={{
               padding:     '20px 24px',
-              borderRight: i < stats.length - 1 ? `1px solid rgba(255,255,255,0.06)` : 'none',
+              borderRight: i < stats.length - 1 ? `1px solid rgba(255,255,255,0.05)` : 'none',
               textAlign:   'center',
             }}
           >
@@ -297,7 +268,14 @@ export default async function ProfilePage() {
             </p>
             <p
               className={label === 'SCORE' ? 'score-pulse' : undefined}
-              style={{ fontFamily: mono, fontSize: 20, fontWeight: 700, color, lineHeight: 1 }}
+              style={{
+                fontFamily:  mono,
+                fontSize:    20,
+                fontWeight:  700,
+                color,
+                lineHeight:  1,
+                textShadow:  label === 'SCORE' ? '0 0 16px rgba(200,255,0,0.35)' : 'none',
+              }}
             >
               {value}
             </p>
@@ -305,51 +283,40 @@ export default async function ProfilePage() {
         ))}
       </div>
 
-      {/* ── Main content ────────────────────────────────────────────────────── */}
+      {/* ── Main content ─────────────────────────────────────────────────────── */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 0 }}>
 
         {/* Left: Activity feed placeholder */}
         <div style={{ padding: '32px 48px', borderRight: `1px solid rgba(255,255,255,0.06)` }}>
-          <h2
-            style={{
-              fontFamily:    display,
-              fontSize:      18,
-              letterSpacing: '0.06em',
-              color:         white,
-              marginBottom:  20,
-              lineHeight:    1,
-            }}
-          >
-            RECENT ACTIVITY
-          </h2>
+          <div className="section-header-line" style={{ marginBottom: 20 }}>
+            <h2 style={{ fontFamily: display, fontSize: 18, letterSpacing: '0.06em', color: white, margin: 0, lineHeight: 1 }}>
+              RECENT ACTIVITY
+            </h2>
+          </div>
           <div
             style={{
-              padding:      '40px 0',
+              padding:      '40px 24px',
               textAlign:    'center',
-              fontFamily:   mono,
-              fontSize:     11,
-              color:        grey[700],
-              letterSpacing:'0.08em',
+              border:       `1px dashed ${grey[700]}`,
+              clipPath:     'polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%)',
             }}
           >
-            No activity yet. Start completing quests and dropping posts.
+            <p style={{ fontFamily: mono, fontSize: 10, color: grey[700], letterSpacing: '0.1em' }}>
+              NO ACTIVITY YET — COMPLETE QUESTS AND DROP POSTS TO GET STARTED
+            </p>
           </div>
         </div>
 
-        {/* Right: Car card + Instagram */}
+        {/* Right: Car card + community score */}
         <div style={{ padding: '32px 24px' }}>
 
           {/* Car card */}
           {car ? (
             <div
-              style={{
-                border:       `1px solid rgba(255,255,255,0.08)`,
-                borderRadius: 6,
-                padding:      '20px 22px',
-                marginBottom: 20,
-              }}
+              className="cyber-card"
+              style={{ padding: '20px 22px', marginBottom: 16 }}
             >
-              <p style={{ fontFamily: mono, fontSize: 9, letterSpacing: '0.12em', color: grey[700], marginBottom: 14 }}>
+              <p style={{ fontFamily: mono, fontSize: 8, letterSpacing: '0.16em', color: grey[700], marginBottom: 14 }}>
                 PRIMARY CAR
               </p>
               <p
@@ -369,8 +336,8 @@ export default async function ProfilePage() {
               </p>
               {car.mods && (
                 <>
-                  <div style={{ height: 1, backgroundColor: `rgba(255,255,255,0.06)`, margin: '14px 0' }} />
-                  <p style={{ fontFamily: mono, fontSize: 9, letterSpacing: '0.1em', color: grey[700], marginBottom: 6 }}>MODS</p>
+                  <div className="cyber-sep" style={{ margin: '14px 0' }} />
+                  <p style={{ fontFamily: mono, fontSize: 8, letterSpacing: '0.14em', color: grey[700], marginBottom: 6 }}>MODS</p>
                   <p style={{ fontFamily: body, fontSize: 12, color: grey[500], lineHeight: 1.6 }}>{car.mods}</p>
                 </>
               )}
@@ -382,7 +349,7 @@ export default async function ProfilePage() {
                   fontFamily:     mono,
                   fontSize:       9,
                   letterSpacing:  '0.1em',
-                  color:          grey[700],
+                  color:          accent,
                   textDecoration: 'none',
                   textAlign:      'right',
                 }}
@@ -394,10 +361,10 @@ export default async function ProfilePage() {
             <div
               style={{
                 border:       `1px dashed ${grey[700]}`,
-                borderRadius: 6,
                 padding:      '24px',
                 textAlign:    'center',
-                marginBottom: 20,
+                marginBottom: 16,
+                clipPath:     'polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%)',
               }}
             >
               <p style={{ fontFamily: mono, fontSize: 10, color: grey[700], letterSpacing: '0.08em', marginBottom: 12 }}>
@@ -405,13 +372,7 @@ export default async function ProfilePage() {
               </p>
               <Link
                 href="/settings#car"
-                style={{
-                  fontFamily:    mono,
-                  fontSize:      9,
-                  letterSpacing: '0.12em',
-                  color:         accent,
-                  textDecoration:'none',
-                }}
+                style={{ fontFamily: mono, fontSize: 9, letterSpacing: '0.12em', color: accent, textDecoration: 'none' }}
               >
                 + ADD YOUR CAR
               </Link>
@@ -419,20 +380,24 @@ export default async function ProfilePage() {
           )}
 
           {/* Community score card */}
-          <div
-            style={{
-              border:       `1px solid rgba(255,255,255,0.08)`,
-              borderRadius: 6,
-              padding:      '20px 22px',
-            }}
-          >
-            <p style={{ fontFamily: mono, fontSize: 9, letterSpacing: '0.12em', color: grey[700], marginBottom: 14 }}>
+          <div className="cyber-card" style={{ padding: '20px 22px' }}>
+            <p style={{ fontFamily: mono, fontSize: 8, letterSpacing: '0.16em', color: grey[700], marginBottom: 14 }}>
               COMMUNITY SCORE
             </p>
-            <p style={{ fontFamily: mono, fontSize: 28, fontWeight: 700, color: accent, lineHeight: 1 }}>
+            <p
+              style={{
+                fontFamily: display,
+                fontSize:   36,
+                letterSpacing: '0.04em',
+                color:      accent,
+                lineHeight: 1,
+                textShadow: '0 0 20px rgba(200,255,0,0.3)',
+              }}
+            >
               {(profile.community_score ?? 0).toLocaleString()}
             </p>
-            <p style={{ fontFamily: body, fontSize: 11, color: grey[700], marginTop: 6 }}>
+            <div className="cyber-sep" style={{ margin: '12px 0 10px' }} />
+            <p style={{ fontFamily: body, fontSize: 11, color: grey[700] }}>
               Earned from drops, replies, and votes
             </p>
           </div>

@@ -8,11 +8,11 @@ import { PageTransition } from '@/components/layout/page-transition';
 const { white, grey, accent } = tokens.colors;
 const { display, body, mono } = tokens.fonts;
 
-const SORT_TABS: { label: string; value: FeedSort }[] = [
-  { label: 'HOT',    value: 'hot'     },
-  { label: 'NEW',    value: 'new'     },
-  { label: 'TOP',    value: 'top'     },
-  { label: 'RISING', value: 'rising'  },
+const SORT_TABS: { label: string; value: FeedSort; icon: string }[] = [
+  { label: 'HOT',    value: 'hot',    icon: '◈' },
+  { label: 'NEW',    value: 'new',    icon: '◇' },
+  { label: 'TOP',    value: 'top',    icon: '◆' },
+  { label: 'RISING', value: 'rising', icon: '◉' },
 ];
 
 interface PageProps {
@@ -33,72 +33,75 @@ export default async function CommunityPage({ searchParams }: PageProps) {
     <div style={{ display: 'flex', gap: 0, minHeight: '100vh', backgroundColor: '#0E0D0C' }}>
 
       {/* ── Feed column ─────────────────────────────────────────────────────── */}
-      <div style={{ flex: 1, minWidth: 0, borderRight: `1px solid ${grey[700]}` }}>
+      <div style={{ flex: 1, minWidth: 0, borderRight: `1px solid rgba(200,255,0,0.06)` }}>
 
         {/* Page header */}
         <div
           style={{
             position:       'relative',
-            padding:        '28px 32px 20px',
-            borderBottom:   `1px solid ${grey[700]}`,
+            padding:        '32px 32px 22px',
+            borderBottom:   `1px solid rgba(200,255,0,0.07)`,
             display:        'flex',
             alignItems:     'flex-end',
             justifyContent: 'space-between',
             gap:            16,
             overflow:       'hidden',
+            background:     'linear-gradient(135deg, #0E0D0C 0%, #111110 100%)',
           }}
         >
-          {/* Fine grid overlay fading out at bottom */}
+          {/* Cyber grid overlay */}
+          <div
+            aria-hidden="true"
+            className="cyber-grid-bg"
+            style={{
+              position:          'absolute',
+              inset:             0,
+              pointerEvents:     'none',
+              WebkitMaskImage:   'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, transparent 100%)',
+              maskImage:         'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, transparent 100%)',
+            }}
+          />
+          {/* Scan sweep */}
+          <div className="scan-sweep" aria-hidden="true" />
+
+          {/* Bottom accent line */}
           <div
             aria-hidden="true"
             style={{
-              position:        'absolute',
-              inset:           0,
-              backgroundImage: [
-                'repeating-linear-gradient(0deg, transparent, transparent 31px, rgba(200,255,0,0.035) 31px, rgba(200,255,0,0.035) 32px)',
-                'repeating-linear-gradient(90deg, transparent, transparent 31px, rgba(200,255,0,0.035) 31px, rgba(200,255,0,0.035) 32px)',
-              ].join(', '),
-              WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, transparent 100%)',
-              maskImage:       'linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, transparent 100%)',
-              pointerEvents:   'none',
+              position:   'absolute',
+              bottom:     0,
+              left:       0,
+              right:      0,
+              height:     1,
+              background: `linear-gradient(90deg, ${accent}44, transparent 60%)`,
             }}
           />
-          <div>
-            <p style={{ fontFamily: mono, fontSize: 9, letterSpacing: '0.16em', color: grey[500], textTransform: 'uppercase', marginBottom: 6 }}>
-              REVPIT COMMUNITY
-            </p>
+
+          <div style={{ position: 'relative', zIndex: 2 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+              <span className="live-dot" />
+              <p style={{ fontFamily: mono, fontSize: 8, letterSpacing: '0.22em', color: accent }}>
+                REVPIT COMMUNITY
+              </p>
+            </div>
             <h1
               style={{
                 fontFamily:    display,
-                fontSize:      48,
+                fontSize:      52,
                 letterSpacing: '0.04em',
                 color:         white,
                 lineHeight:    1,
+                textShadow:    '0 0 40px rgba(200,255,0,0.1)',
               }}
             >
               THE PIT
             </h1>
           </div>
+
           <Link
             href="/community/general/submit"
-            style={{
-              display:         'inline-flex',
-              alignItems:      'center',
-              gap:             6,
-              height:          38,
-              padding:         '0 20px',
-              backgroundColor: accent,
-              border:          'none',
-              fontFamily:      mono,
-              fontSize:        10,
-              fontWeight:      700,
-              letterSpacing:   '0.1em',
-              color:           '#0E0D0C',
-              textDecoration:  'none',
-              textTransform:   'uppercase',
-              whiteSpace:      'nowrap',
-              flexShrink:      0,
-            }}
+            className="cyber-btn"
+            style={{ height: 40, padding: '0 20px', fontSize: 10, flexShrink: 0, position: 'relative', zIndex: 2 }}
           >
             + NEW DROP
           </Link>
@@ -109,11 +112,11 @@ export default async function CommunityPage({ searchParams }: PageProps) {
           style={{
             display:        'flex',
             alignItems:     'stretch',
-            borderBottom:   `1px solid ${grey[700]}`,
-            backgroundColor: grey[900],
+            borderBottom:   `1px solid rgba(200,255,0,0.06)`,
+            backgroundColor: '#0F0E0C',
           }}
         >
-          {SORT_TABS.map(({ label, value }) => {
+          {SORT_TABS.map(({ label, value, icon }) => {
             const active = sort === value;
             return (
               <Link
@@ -123,19 +126,32 @@ export default async function CommunityPage({ searchParams }: PageProps) {
                   display:         'flex',
                   alignItems:      'center',
                   justifyContent:  'center',
-                  padding:         '12px 24px',
+                  gap:             6,
+                  padding:         '13px 24px',
                   fontFamily:      mono,
-                  fontSize:        10,
+                  fontSize:        9,
                   fontWeight:      active ? 700 : 400,
-                  letterSpacing:   '0.1em',
+                  letterSpacing:   '0.14em',
                   color:           active ? accent : grey[500],
                   textDecoration:  'none',
                   borderBottom:    active ? `2px solid ${accent}` : '2px solid transparent',
-                  backgroundColor: active ? `${accent}08` : 'transparent',
+                  backgroundColor: active ? `${accent}06` : 'transparent',
                   transition:      'color 120ms ease, background 120ms ease',
+                  boxShadow:       active ? `inset 0 -1px 0 ${accent}40` : 'none',
+                  position:        'relative',
                 }}
               >
+                <span style={{ fontSize: 8, opacity: active ? 1 : 0.5 }}>{icon}</span>
                 {label}
+                {active && (
+                  <div
+                    style={{
+                      position: 'absolute', bottom: -2, left: 0, right: 0, height: 2,
+                      background: `linear-gradient(90deg, transparent, ${accent}, transparent)`,
+                      boxShadow: `0 0 8px ${accent}66`,
+                    }}
+                  />
+                )}
               </Link>
             );
           })}
@@ -150,26 +166,36 @@ export default async function CommunityPage({ searchParams }: PageProps) {
       {/* ── Pit sidebar ─────────────────────────────────────────────────────── */}
       <aside
         style={{
-          width:        280,
-          flexShrink:   0,
-          padding:      '24px 20px',
-          overflowY:    'auto',
+          width:          280,
+          flexShrink:     0,
+          padding:        '24px 20px',
+          overflowY:      'auto',
+          borderLeft:     `1px solid rgba(200,255,0,0.04)`,
+          background:     '#0C0B0A',
         }}
       >
-        <p
-          style={{
-            fontFamily:    mono,
-            fontSize:      9,
-            letterSpacing: '0.14em',
-            color:         grey[500],
-            textTransform: 'uppercase',
-            marginBottom:  14,
-          }}
-        >
-          PITS
-        </p>
+        {/* Sidebar header */}
+        <div style={{ marginBottom: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+              <polygon points="5,0 10,5 5,10 0,5" fill={accent} fillOpacity="0.7" />
+            </svg>
+            <p
+              style={{
+                fontFamily:    mono,
+                fontSize:      8,
+                letterSpacing: '0.2em',
+                color:         grey[700],
+                textTransform: 'uppercase',
+              }}
+            >
+              ACTIVE PITS
+            </p>
+          </div>
+          <div className="cyber-sep" />
+        </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
           {pits.map((pit) => (
             <Link
               key={pit.id}
@@ -178,29 +204,68 @@ export default async function CommunityPage({ searchParams }: PageProps) {
                 display:         'flex',
                 alignItems:      'center',
                 justifyContent:  'space-between',
-                padding:         '9px 12px',
-                backgroundColor: 'transparent',
-                border:          `1px solid rgba(255,255,255,0.05)`,
-                borderRadius:    0,
+                padding:         '10px 12px',
+                background:      'transparent',
+                border:          `1px solid rgba(200,255,0,0.05)`,
+                clipPath:        'polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%)',
                 textDecoration:  'none',
                 transition:      'background 120ms ease, border-color 120ms ease',
               }}
             >
-              <div>
-                <span style={{ fontFamily: mono, fontSize: 11, fontWeight: 700, color: accent, letterSpacing: '0.04em' }}>
+              <div style={{ minWidth: 0 }}>
+                <span
+                  style={{
+                    fontFamily:    mono,
+                    fontSize:      11,
+                    fontWeight:    700,
+                    color:         accent,
+                    letterSpacing: '0.04em',
+                    display:       'block',
+                    overflow:      'hidden',
+                    textOverflow:  'ellipsis',
+                    whiteSpace:    'nowrap',
+                  }}
+                >
                   r/{pit.name}
                 </span>
                 {pit.display_name !== pit.name && (
-                  <span style={{ fontFamily: body, fontSize: 11, color: grey[500], marginLeft: 6 }}>
+                  <span
+                    style={{
+                      fontFamily:   body,
+                      fontSize:     10,
+                      color:        grey[700],
+                      display:      'block',
+                      overflow:     'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace:   'nowrap',
+                    }}
+                  >
                     {pit.display_name}
                   </span>
                 )}
               </div>
-              <span style={{ fontFamily: mono, fontSize: 9, color: grey[700], letterSpacing: '0.04em' }}>
+              <span
+                style={{
+                  fontFamily:    mono,
+                  fontSize:      9,
+                  color:         grey[700],
+                  letterSpacing: '0.06em',
+                  flexShrink:    0,
+                  marginLeft:    8,
+                }}
+              >
                 {pit.member_count.toLocaleString()}
               </span>
             </Link>
           ))}
+        </div>
+
+        {/* Footer HUD label */}
+        <div style={{ marginTop: 24 }}>
+          <div className="cyber-sep" style={{ marginBottom: 12 }} />
+          <p style={{ fontFamily: mono, fontSize: 8, letterSpacing: '0.14em', color: grey[700] }}>
+            {pits.length} PITS ACTIVE
+          </p>
         </div>
       </aside>
     </div>

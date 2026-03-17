@@ -85,13 +85,13 @@ function ActivityIcon({ type }: { type?: string }) {
       style={{
         width:           34,
         height:          34,
-        borderRadius:    4,
         backgroundColor: bg,
         display:         'flex',
         alignItems:      'center',
         justifyContent:  'center',
         flexShrink:      0,
         border:          `1px solid ${grey[700]}`,
+        clipPath:        'polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%)',
       }}
     >
       {type === 'quest' || type === 'race' ? (
@@ -118,12 +118,10 @@ function QuestBar({ quest }: { quest: Quest }) {
   const pct = Math.min((quest.progress / quest.total) * 100, 100);
   return (
     <div
+      className="cyber-card"
       style={{
-        marginBottom:    20,
-        backgroundColor: `${grey[700]}22`,
-        border:          `1px solid ${grey[700]}55`,
-        borderRadius:    4,
-        padding:         '14px 16px',
+        marginBottom: 12,
+        padding:      '14px 16px',
       }}
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
@@ -135,13 +133,13 @@ function QuestBar({ quest }: { quest: Quest }) {
         </span>
       </div>
 
-      <div style={{ height: 3, backgroundColor: grey[700], borderRadius: 2, overflow: 'hidden', marginBottom: 8 }}>
+      <div style={{ height: 3, backgroundColor: grey[700], borderRadius: 0, overflow: 'hidden', marginBottom: 8 }}>
         <div
+          className="progress-glow"
           style={{
             height:          '100%',
             width:           `${pct}%`,
             backgroundColor: accent,
-            borderRadius:    2,
             transition:      'width 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
           }}
         />
@@ -155,7 +153,7 @@ function QuestBar({ quest }: { quest: Quest }) {
         ) : (
           <span />
         )}
-        <span style={{ fontFamily: mono, fontSize: 9, color: grey[500] }}>
+        <span style={{ fontFamily: mono, fontSize: 9, color: grey[700] }}>
           {quest.progress}/{quest.total}
         </span>
       </div>
@@ -231,207 +229,262 @@ export default async function DashboardPage() {
 
   return (
     <PageTransition>
-      <div style={{ padding: '40px 48px', maxWidth: 1060, fontFamily: body }}>
+      <div style={{ minHeight: '100vh', backgroundColor: '#0E0D0C', fontFamily: body }}>
 
-        {/* Page title */}
-        <div style={{ marginBottom: 32, position: 'relative', overflow: 'hidden' }}>
-          {/* Speed streak decoration */}
-          <svg
+        {/* ── Full-bleed cyber header ──────────────────────────────────────── */}
+        <div
+          style={{
+            position:     'relative',
+            borderBottom: `1px solid rgba(200,255,0,0.08)`,
+            padding:      '40px 48px 36px',
+            overflow:     'hidden',
+            background:   'linear-gradient(135deg, #0E0D0C 0%, #111110 60%, #0A0908 100%)',
+          }}
+        >
+          <div
             aria-hidden="true"
-            viewBox="0 0 520 72"
-            preserveAspectRatio="xMaxYMid meet"
-            style={{ position: 'absolute', right: 0, top: 0, width: 520, height: 72, pointerEvents: 'none', opacity: 0.07 }}
-          >
-            {([
-              { y: 10,  len: 200, w: 2   },
-              { y: 22,  len: 130, w: 1   },
-              { y: 33,  len: 260, w: 2   },
-              { y: 44,  len: 90,  w: 1   },
-              { y: 55,  len: 180, w: 1.5 },
-              { y: 65,  len: 110, w: 1   },
-            ] as { y: number; len: number; w: number }[]).map(({ y, len, w }, i) => (
-              <line key={i} x1={520 - len} y1={y} x2={520} y2={y} stroke="#C8FF00" strokeWidth={w} />
-            ))}
-          </svg>
+            className="cyber-grid-bg"
+            style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: 0.7 }}
+          />
+          <div className="scan-sweep" aria-hidden="true" />
+          <div className="speed-streaks" aria-hidden="true" />
 
-          <h1
-            style={{
-              fontFamily:    display,
-              fontSize:      48,
-              letterSpacing: '0.04em',
-              color:         white,
-              lineHeight:    1,
-              marginBottom:  6,
-            }}
-          >
-            DASHBOARD
-          </h1>
-          <p style={{ fontFamily: mono, fontSize: 10, letterSpacing: '0.14em', color: grey[500], textTransform: 'uppercase' }}>
-            PERFORMANCE OVERVIEW &amp; RECENT ACTIVITY
-          </p>
-        </div>
+          {/* Corner bracket */}
+          <div aria-hidden="true" style={{ position: 'absolute', top: 16, right: 48, opacity: 0.15 }}>
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+              <path d="M40 0H20V4H36V20H40V0Z" fill={accent} />
+              <path d="M0 40H20V36H4V20H0V40Z" fill={accent} />
+            </svg>
+          </div>
 
-        {/* ── Stat widgets ─────────────────────────────────────────────────── */}
-        <div className="rp-stat-grid" style={{ marginBottom: 28 }}>
-
-          {/* Total Score */}
-          <div className="rp-card" style={{ padding: '22px 26px' }}>
-            <p style={{ fontFamily: mono, fontSize: 9, letterSpacing: '0.14em', color: grey[500], textTransform: 'uppercase', marginBottom: 14 }}>
-              TOTAL SCORE
-            </p>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <StatNumber value={resolvedScore} style={{ fontFamily: mono, fontSize: 38, fontWeight: 700, color: accent, lineHeight: 1 }} />
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true" style={{ opacity: 0.6 }}>
-                <path d="M3 13l5-5 3 3 4-5" stroke={accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M12 6h3v3" stroke={accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+          <div style={{ position: 'relative', zIndex: 2, maxWidth: 1100 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+              <span className="live-dot" />
+              <span style={{ fontFamily: mono, fontSize: 8, letterSpacing: '0.22em', color: accent }}>
+                REVPIT · COMMAND CENTER
+              </span>
             </div>
-            <span
+            <h1
               style={{
-                display:         'inline-block',
-                marginTop:       8,
-                padding:         '2px 8px',
-                backgroundColor: TIER_BG[tier],
-                borderRadius:    2,
-                fontFamily:      mono,
-                fontSize:        9,
-                fontWeight:      700,
-                letterSpacing:   '0.12em',
-                color:           TIER_COLOR[tier],
-                textTransform:   'uppercase',
+                fontFamily:    display,
+                fontSize:      'clamp(44px, 5vw, 64px)',
+                letterSpacing: '0.04em',
+                color:         white,
+                lineHeight:    0.9,
+                marginBottom:  10,
               }}
             >
-              {TIER_LABEL[tier]}
-            </span>
-          </div>
-
-          {/* Global Rank */}
-          <div className="rp-card" style={{ padding: '22px 26px' }}>
-            <p style={{ fontFamily: mono, fontSize: 9, letterSpacing: '0.14em', color: grey[500], textTransform: 'uppercase', marginBottom: 14 }}>
-              GLOBAL RANK
+              DASHBOARD
+            </h1>
+            <p style={{ fontFamily: mono, fontSize: 11, letterSpacing: '0.14em', color: grey[500], textTransform: 'uppercase' }}>
+              SEASON 3 · PERFORMANCE OVERVIEW
             </p>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              {p.global_rank != null
-                ? <><span style={{ fontFamily: mono, fontSize: 38, fontWeight: 700, color: white, lineHeight: 1 }}>#</span><StatNumber value={p.global_rank} style={{ fontFamily: mono, fontSize: 38, fontWeight: 700, color: white, lineHeight: 1 }} /></>
-                : <span style={{ fontFamily: mono, fontSize: 38, fontWeight: 700, color: white, lineHeight: 1 }}>—</span>
-              }
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true" style={{ opacity: 0.4 }}>
-                <circle cx="9" cy="9" r="7" stroke={grey[300]} strokeWidth="1.5" />
-                <path d="M9 5.5v4l2.5 2" stroke={grey[300]} strokeWidth="1.5" strokeLinecap="round" />
-              </svg>
-            </div>
-            <span style={{ fontFamily: mono, fontSize: 9, letterSpacing: '0.1em', color: grey[500], textTransform: 'uppercase', marginTop: 8, display: 'block' }}>
-              WORLDWIDE
-            </span>
           </div>
-
-          {/* Profile Completion */}
-          <div className="rp-card" style={{ padding: '22px 26px' }}>
-            <p style={{ fontFamily: mono, fontSize: 9, letterSpacing: '0.14em', color: grey[500], textTransform: 'uppercase', marginBottom: 14 }}>
-              PROFILE COMPLETION
-            </p>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-              <StatNumber value={p.profile_completion} style={{ fontFamily: mono, fontSize: 38, fontWeight: 700, color: white, lineHeight: 1 }} />
-              <span style={{ fontFamily: mono, fontSize: 38, fontWeight: 700, color: white, lineHeight: 1 }}>%</span>
-              <RingGauge value={p.profile_completion} />
-            </div>
-          </div>
-
         </div>
 
-        {/* ── Bottom grid ──────────────────────────────────────────────────── */}
-        <div className="rp-bottom-grid" style={{ gap: 16 }}>
+        {/* ── Padded content ───────────────────────────────────────────────── */}
+        <div style={{ padding: '40px 48px', maxWidth: 1100 }}>
 
-          {/* Activity Feed */}
-          <div className="rp-card" style={{ padding: '22px 26px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-              <h2 style={{ fontFamily: display, fontSize: 18, letterSpacing: '0.06em', color: white }}>
-                ACTIVITY FEED
-              </h2>
-              <Link
-                href="/activity"
-                style={{
-                  fontFamily:     mono,
-                  fontSize:       9,
-                  letterSpacing:  '0.1em',
-                  color:          grey[500],
-                  textDecoration: 'none',
-                  border:         `1px solid ${grey[700]}`,
-                  padding:        '4px 10px',
-                  borderRadius:   2,
-                }}
+          {/* ── Score hero row ──────────────────────────────────────────────── */}
+          <div style={{ display: 'flex', gap: 40, alignItems: 'flex-start', marginBottom: 40 }}>
+            <div style={{ flex: 1 }}>
+              <div
+                className="score-display"
+                style={{ fontSize: 96, lineHeight: 0.85, letterSpacing: '0.02em' }}
               >
-                VIEW ALL
-              </Link>
-            </div>
-
-            {activity.length === 0 ? (
-              <p style={{ fontFamily: body, fontSize: 13, color: grey[500] }}>
-                No activity yet. Complete quests to get started.
-              </p>
-            ) : (
-              <div>
-                {activity.map((item, idx) => (
-                  <div
-                    key={item.id}
-                    style={{
-                      display:       'flex',
-                      alignItems:    'flex-start',
-                      gap:           12,
-                      paddingBottom: idx < activity.length - 1 ? 16 : 0,
-                      marginBottom:  idx < activity.length - 1 ? 16 : 0,
-                      borderBottom:  idx < activity.length - 1 ? `1px solid ${grey[700]}44` : 'none',
-                    }}
-                  >
-                    <ActivityIcon type={item.type} />
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <span style={{ fontFamily: body, fontSize: 13, color: grey[300], lineHeight: 1.4 }}>
-                        {item.description}
-                      </span>
-                      <p style={{ fontFamily: mono, fontSize: 9, color: grey[700], marginTop: 3, letterSpacing: '0.06em' }}>
-                        {timeAgo(item.created_at)}
-                      </p>
-                    </div>
-                    {item.xp != null && item.xp > 0 && (
-                      <span style={{ fontFamily: mono, fontSize: 11, fontWeight: 700, color: accent, whiteSpace: 'nowrap', flexShrink: 0 }}>
-                        +{item.xp} XP
-                      </span>
-                    )}
-                  </div>
-                ))}
+                <StatNumber value={resolvedScore} style={{ fontFamily: display, fontSize: 96, lineHeight: 0.85, color: accent }} />
               </div>
-            )}
+              <p style={{ fontFamily: mono, fontSize: 11, letterSpacing: '0.16em', color: grey[500], textTransform: 'uppercase', marginTop: 8 }}>
+                OVERALL RATING
+              </p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 12 }}>
+                <span style={{ fontFamily: display, fontSize: 28, color: white, letterSpacing: '0.04em' }}>
+                  {p.global_rank != null ? `#${p.global_rank.toLocaleString()}` : 'UNRANKED'}
+                </span>
+                <span
+                  style={{
+                    padding:         '2px 10px',
+                    border:          `1px solid ${TIER_COLOR[tier]}`,
+                    fontFamily:      mono,
+                    fontSize:        9,
+                    fontWeight:      700,
+                    letterSpacing:   '0.14em',
+                    color:           TIER_COLOR[tier],
+                    backgroundColor: TIER_BG[tier],
+                    textTransform:   'uppercase',
+                    clipPath:        'polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%)',
+                  }}
+                >
+                  {TIER_LABEL[tier]}
+                </span>
+              </div>
+
+              {/* XP bar */}
+              <div style={{ marginTop: 16, maxWidth: 320 }}>
+                <p style={{ fontFamily: mono, fontSize: 10, color: grey[500], marginBottom: 6, letterSpacing: '0.08em' }}>
+                  {Math.max(0, 10000 - resolvedScore).toLocaleString()} PTS TO ELITE
+                </p>
+                <div className="xp-bar">
+                  <div
+                    className="xp-bar-fill"
+                    style={{ '--bar-target': `${Math.min(100, (resolvedScore / 10000) * 100).toFixed(1)}%` } as React.CSSProperties}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Active Quests */}
-          <div className="rp-card" style={{ padding: '22px 26px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-              <h2 style={{ fontFamily: display, fontSize: 18, letterSpacing: '0.06em', color: white }}>
-                QUEST PROGRESS
-              </h2>
-              <span style={{ fontFamily: mono, fontSize: 9, letterSpacing: '0.1em', color: grey[500] }}>
-                {quests.length} ACTIVE
+          {/* ── Stat widgets ────────────────────────────────────────────────── */}
+          <div className="rp-stat-grid stat-card-enter" style={{ marginBottom: 28 }}>
+
+            {/* Total Score */}
+            <div className="rp-card page-enter stagger-1" style={{ padding: '22px 26px' }}>
+              <p style={{ fontFamily: mono, fontSize: 9, letterSpacing: '0.14em', color: grey[500], textTransform: 'uppercase', marginBottom: 14 }}>
+                TOTAL SCORE
+              </p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <StatNumber value={resolvedScore} style={{ fontFamily: mono, fontSize: 38, fontWeight: 700, color: accent, lineHeight: 1 }} />
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true" style={{ opacity: 0.6 }}>
+                  <path d="M3 13l5-5 3 3 4-5" stroke={accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M12 6h3v3" stroke={accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
+              <span
+                style={{
+                  display: 'inline-block', marginTop: 8, padding: '2px 8px',
+                  backgroundColor: TIER_BG[tier], fontFamily: mono,
+                  fontSize: 9, fontWeight: 700, letterSpacing: '0.12em',
+                  color: TIER_COLOR[tier], textTransform: 'uppercase',
+                  clipPath: 'polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%)',
+                }}
+              >
+                {TIER_LABEL[tier]}
               </span>
             </div>
 
-            {quests.length === 0 ? (
-              <div>
-                <p style={{ fontFamily: body, fontSize: 13, color: grey[500], marginBottom: 12 }}>
-                  No active quests.
-                </p>
-                <Link
-                  href="/quests"
-                  className="rp-btn-accent btn-press"
-                  style={{ height: 34, padding: '0 18px', fontSize: 10 }}
-                >
-                  BROWSE QUESTS
-                </Link>
+            {/* Global Rank */}
+            <div className="rp-card page-enter stagger-2" style={{ padding: '22px 26px' }}>
+              <p style={{ fontFamily: mono, fontSize: 9, letterSpacing: '0.14em', color: grey[500], textTransform: 'uppercase', marginBottom: 14 }}>
+                GLOBAL RANK
+              </p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                {p.global_rank != null
+                  ? <><span style={{ fontFamily: mono, fontSize: 38, fontWeight: 700, color: white, lineHeight: 1 }}>#</span><StatNumber value={p.global_rank} style={{ fontFamily: mono, fontSize: 38, fontWeight: 700, color: white, lineHeight: 1 }} /></>
+                  : <span style={{ fontFamily: mono, fontSize: 38, fontWeight: 700, color: white, lineHeight: 1 }}>—</span>
+                }
               </div>
-            ) : (
-              quests.map((q) => <QuestBar key={q.id} quest={q} />)
-            )}
+              <span style={{ fontFamily: mono, fontSize: 9, letterSpacing: '0.1em', color: grey[500], textTransform: 'uppercase', marginTop: 8, display: 'block' }}>
+                WORLDWIDE
+              </span>
+            </div>
+
+            {/* Profile Completion */}
+            <div className="rp-card page-enter stagger-3" style={{ padding: '22px 26px' }}>
+              <p style={{ fontFamily: mono, fontSize: 9, letterSpacing: '0.14em', color: grey[500], textTransform: 'uppercase', marginBottom: 14 }}>
+                PROFILE COMPLETION
+              </p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <StatNumber value={p.profile_completion} style={{ fontFamily: mono, fontSize: 38, fontWeight: 700, color: white, lineHeight: 1 }} />
+                <span style={{ fontFamily: mono, fontSize: 38, fontWeight: 700, color: white, lineHeight: 1 }}>%</span>
+                <RingGauge value={p.profile_completion} />
+              </div>
+            </div>
+
           </div>
 
+          {/* ── Bottom grid ─────────────────────────────────────────────────── */}
+          <div className="rp-bottom-grid" style={{ gap: 16 }}>
+
+            {/* Activity Feed */}
+            <div className="cyber-card" style={{ padding: '22px 26px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <div
+                    style={{
+                      width: 3, height: 20,
+                      background: `linear-gradient(180deg, ${accent}, transparent)`,
+                      flexShrink: 0,
+                    }}
+                  />
+                  <h2 style={{ fontFamily: display, fontSize: 20, letterSpacing: '0.06em', color: white, margin: 0 }}>
+                    RECENT ACTIVITY
+                  </h2>
+                </div>
+                <Link href="/activity" className="cyber-btn-ghost" style={{ height: 28, padding: '0 12px', fontSize: 9 }}>
+                  VIEW ALL
+                </Link>
+              </div>
+
+              {activity.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '32px 0' }}>
+                  <p style={{ fontFamily: mono, fontSize: 11, letterSpacing: '0.1em', color: grey[700] }}>
+                    NO ACTIVITY YET — COMPLETE QUESTS TO GET STARTED
+                  </p>
+                </div>
+              ) : (
+                <div>
+                  {activity.map((item, idx) => (
+                    <div key={item.id} style={{
+                      display: 'flex', alignItems: 'flex-start', gap: 12,
+                      paddingBottom: idx < activity.length - 1 ? 16 : 0,
+                      marginBottom: idx < activity.length - 1 ? 16 : 0,
+                      borderBottom: idx < activity.length - 1 ? `1px solid ${grey[700]}44` : 'none',
+                    }}>
+                      <ActivityIcon type={item.type} />
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <span style={{ fontFamily: body, fontSize: 13, color: grey[300], lineHeight: 1.4 }}>
+                          {item.description}
+                        </span>
+                        <p style={{ fontFamily: mono, fontSize: 9, color: grey[700], marginTop: 3, letterSpacing: '0.06em' }}>
+                          {timeAgo(item.created_at)}
+                        </p>
+                      </div>
+                      {item.xp != null && item.xp > 0 && (
+                        <span style={{ fontFamily: mono, fontSize: 11, fontWeight: 700, color: accent, whiteSpace: 'nowrap', flexShrink: 0 }}>
+                          +{item.xp} XP
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Active Quests */}
+            <div className="cyber-card" style={{ padding: '22px 26px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <div
+                    style={{
+                      width: 3, height: 20,
+                      background: `linear-gradient(180deg, ${accent}, transparent)`,
+                      flexShrink: 0,
+                    }}
+                  />
+                  <h2 style={{ fontFamily: display, fontSize: 20, letterSpacing: '0.06em', color: white, margin: 0 }}>
+                    ACTIVE QUESTS
+                  </h2>
+                </div>
+                <span style={{ fontFamily: mono, fontSize: 9, letterSpacing: '0.1em', color: grey[700] }}>
+                  {quests.length} ACTIVE
+                </span>
+              </div>
+
+              {quests.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '24px 0' }}>
+                  <p style={{ fontFamily: mono, fontSize: 11, letterSpacing: '0.1em', color: grey[700], marginBottom: 16 }}>
+                    NO ACTIVE QUESTS
+                  </p>
+                  <Link href="/quests" className="cyber-btn" style={{ height: 36, padding: '0 20px', fontSize: 10 }}>
+                    BROWSE QUESTS
+                  </Link>
+                </div>
+              ) : (
+                quests.map((q) => <QuestBar key={q.id} quest={q} />)
+              )}
+            </div>
+
+          </div>
         </div>
       </div>
     </PageTransition>

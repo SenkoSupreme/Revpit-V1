@@ -1,7 +1,7 @@
 # REVPIT Platform — Function Reference Guide
 
 > **Location of source code:** `c:\Users\SEN VON DOOM\OneDrive\Desktop\RVP_Proj\Revpit-V1\revpit\src`
-> **Last updated:** 2026-03-17 (Clubs fixes: createAdminClient migration, owner_id uuid→text migration, onMouseEnter→CSS module hover, redirect to /clubs on create, new /clubs/[id] detail page; clubs page createAdminClient fix)
+> **Last updated:** 2026-03-17 (AAA UI overhaul v3: PlayerCard component, useCountUp hook, globals.css design system additions, sidebar glow divider, dashboard/leaderboard page updates with podium, XP bar, score hero, loading skeleton updates)
 > **Rule:** This file must be updated whenever a new function, hook, server action, or component is added to the codebase.
 
 ---
@@ -1172,8 +1172,69 @@ Minimal toast state hook. Returns `{ toasts, toast, dismiss }`.
 - **`dismiss(id)`** — removes toast by id
 
 ### Loading skeletons
-- `src/app/dashboard/loading.tsx` — 3 stat card + 2 bottom-grid skeletons
-- `src/app/leaderboard/loading.tsx` — header + 10 row skeletons
+- `src/app/dashboard/loading.tsx` — score hero + 3 stat card + 2 bottom-grid skeletons (v3 skeleton-v2 class)
+- `src/app/leaderboard/loading.tsx` — header + 10 row skeletons (v3 skeleton-v2 class)
+- `src/app/community/loading.tsx` — header + tab row + 6 card skeletons (v3 skeleton-v2 class)
+
+---
+
+### `PlayerCard`
+**File:** `src/components/ui/player-card.tsx`
+**Type:** Client Component (`'use client'`)
+
+FIFA-style player card component for displaying a driver's tier, score, stats, and car. Supports 4 tiers (STARTER/ADVANCED/PRO/ELITE) with distinct color schemes and glows. ELITE tier adds 3D mouse-tracking tilt, hex pattern overlay, shimmer sweep on hover, and diagonal watermark. PRO tier uses lime `#C8FF00` accent. Supports three sizes (sm/md/lg) and an optional floating animation.
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `username` | `string` | required | Driver username (displayed uppercased) |
+| `handle` | `string` | required | @handle shown below name |
+| `score` | `number` | required | Driver score (0–10000 scale) |
+| `tier` | `PlayerCardTier` | required | `'STARTER' \| 'ADVANCED' \| 'PRO' \| 'ELITE'` |
+| `carName` | `string?` | — | Optional car name shown in mid section |
+| `carPhoto` | `string?` | — | Reserved for future image support |
+| `stats` | `PlayerCardStats` | required | `{ spd, pwr, skl, clb, rep }` (0–10000 each) |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Card size: sm=160px, md=240px, lg=300px wide |
+| `animate` | `boolean` | `false` | Enables CSS float animation |
+
+**Return:** Rendered `<div>` card with inline styles; no side effects.
+
+**Usage:**
+```tsx
+<PlayerCard
+  username="SPEEDKING"
+  handle="speedking99"
+  score={7500}
+  tier="PRO"
+  carName="Civic Type-R"
+  stats={{ spd: 7000, pwr: 6500, skl: 7200, clb: 5000, rep: 8000 }}
+  size="md"
+  animate
+/>
+```
+
+---
+
+### `useCountUp`
+**File:** `src/lib/hooks/use-count-up.ts`
+**Type:** Client Hook (`'use client'`)
+
+Animates a number from 0 to a target value using `requestAnimationFrame` with an ease-out cubic easing function. Supports configurable duration and start delay. Cleans up RAF and timeout on unmount/re-run.
+
+**Parameters:**
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `target` | `number` | required | Final value to count up to |
+| `duration` | `number` | `1200` | Animation duration in milliseconds |
+| `delay` | `number` | `0` | Delay before animation starts in ms |
+
+**Returns:** `number` — the current animated integer value (0 → target).
+
+**Usage:**
+```tsx
+const animatedScore = useCountUp(4250, 1000, 200);
+// animatedScore counts from 0 to 4250 over 1s, starting after 200ms
+```
 
 ---
 

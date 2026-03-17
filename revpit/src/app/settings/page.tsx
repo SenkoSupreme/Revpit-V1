@@ -5,6 +5,7 @@ import { SignOutButton } from '@clerk/nextjs';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { SettingsForm } from '@/components/settings-form';
 import { tokens } from '@/lib/design-tokens';
+import { PageTransition } from '@/components/layout/page-transition';
 
 export const metadata = { title: 'Settings — REVPIT' };
 
@@ -38,52 +39,61 @@ export default async function SettingsPage() {
     .maybeSingle<{ make: string; model: string; year: number; mods: string | null }>();
 
   return (
+    <PageTransition>
     <div style={{ minHeight: '100vh', backgroundColor: black }}>
 
-      {/* ── Page header ───────────────────────────────────────────────────── */}
+      {/* ── Cyber hero header ─────────────────────────────────────────────── */}
       <div
         style={{
-          padding:      '32px 48px 28px',
-          borderBottom: `1px solid rgba(255,255,255,0.06)`,
-          display:      'flex',
-          alignItems:   'flex-end',
-          justifyContent: 'space-between',
-          gap:          16,
-          flexWrap:     'wrap',
+          position:     'relative',
+          background:   `linear-gradient(135deg, #0E0D0C 0%, #111110 60%, #0A0908 100%)`,
+          borderBottom: `1px solid rgba(200,255,0,0.08)`,
+          padding:      '40px 48px 36px',
+          overflow:     'hidden',
         }}
       >
-        <div>
-          <h1
-            style={{
-              fontFamily:    display,
-              fontSize:      36,
-              letterSpacing: '0.04em',
-              color:         white,
-              lineHeight:    1,
-              margin:        0,
-            }}
-          >
-            SETTINGS
-          </h1>
-          <p style={{ fontFamily: mono, fontSize: 10, color: grey[500], letterSpacing: '0.1em', marginTop: 8 }}>
-            @{profile.username}
-          </p>
+        <div
+          aria-hidden="true"
+          className="cyber-grid-bg"
+          style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: 0.6 }}
+        />
+        <div className="scan-sweep" aria-hidden="true" />
+
+        {/* Corner bracket */}
+        <div aria-hidden="true" style={{ position: 'absolute', top: 16, right: 48, opacity: 0.12 }}>
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <path d="M36 0H18V4H32V18H36V0Z" fill={accent} />
+            <path d="M0 36H18V32H4V18H0V36Z" fill={accent} />
+          </svg>
         </div>
-        <Link
-          href="/profile"
-          style={{
-            display:        'flex',
-            alignItems:     'center',
-            gap:            6,
-            fontFamily:     mono,
-            fontSize:       9,
-            letterSpacing:  '0.12em',
-            color:          grey[500],
-            textDecoration: 'none',
-          }}
-        >
-          VIEW PROFILE →
-        </Link>
+
+        <div style={{ position: 'relative', zIndex: 2, display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+              <span style={{ fontFamily: mono, fontSize: 8, letterSpacing: '0.2em', color: grey[700] }}>
+                REVPIT · PILOT CONFIG
+              </span>
+            </div>
+            <h1
+              style={{
+                fontFamily:    display,
+                fontSize:      'clamp(36px, 4vw, 52px)',
+                letterSpacing: '0.04em',
+                color:         white,
+                lineHeight:    1,
+                margin:        0,
+              }}
+            >
+              SETTINGS
+            </h1>
+            <p style={{ fontFamily: mono, fontSize: 10, color: grey[500], letterSpacing: '0.1em', marginTop: 8 }}>
+              @{profile.username}
+            </p>
+          </div>
+          <Link href="/profile" className="cyber-btn-ghost" style={{ height: 34, fontSize: 9 }}>
+            VIEW PROFILE →
+          </Link>
+        </div>
       </div>
 
       {/* ── Content ───────────────────────────────────────────────────────── */}
@@ -98,65 +108,71 @@ export default async function SettingsPage() {
           car={car}
         />
 
+        {/* Divider */}
+        <div className="cyber-sep" style={{ margin: '0 0 40px' }} />
+
         {/* ── Account section ─────────────────────────────────────────────── */}
-        <div style={{ height: 1, backgroundColor: `rgba(255,255,255,0.06)`, margin: '0 0 40px' }} />
-
         <section>
-          <h2
-            style={{
-              fontFamily:    display,
-              fontSize:      18,
-              letterSpacing: '0.06em',
-              color:         white,
-              marginBottom:  20,
-              lineHeight:    1,
-            }}
-          >
-            ACCOUNT
-          </h2>
+          <div className="section-header-line" style={{ marginBottom: 20 }}>
+            <h2 style={{ fontFamily: display, fontSize: 18, letterSpacing: '0.06em', color: white, margin: 0, lineHeight: 1 }}>
+              ACCOUNT
+            </h2>
+          </div>
 
+          {/* Cyber card */}
           <div
             style={{
-              border:       `1px solid rgba(255,255,255,0.08)`,
-              borderRadius: 6,
-              overflow:     'hidden',
-              maxWidth:     520,
+              background: 'linear-gradient(135deg, #1C1B19 0%, #141312 100%)',
+              border:     `1px solid rgba(200,255,0,0.08)`,
+              clipPath:   'polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%)',
+              overflow:   'hidden',
+              maxWidth:   520,
             }}
           >
-            {/* Username row (read-only) */}
+            {/* Username row */}
             <div
               style={{
-                display:      'flex',
-                alignItems:   'center',
+                display:        'flex',
+                alignItems:     'center',
                 justifyContent: 'space-between',
-                padding:      '16px 20px',
-                borderBottom: `1px solid rgba(255,255,255,0.06)`,
+                padding:        '16px 20px',
+                borderBottom:   `1px solid rgba(200,255,0,0.06)`,
               }}
             >
               <div>
-                <p style={{ fontFamily: mono, fontSize: 9, letterSpacing: '0.1em', color: grey[700], marginBottom: 4 }}>
+                <p style={{ fontFamily: mono, fontSize: 8, letterSpacing: '0.14em', color: grey[700], marginBottom: 4 }}>
                   USERNAME
                 </p>
                 <p style={{ fontFamily: body, fontSize: 13, color: white }}>
                   {profile.username}
                 </p>
               </div>
-              <span style={{ fontFamily: mono, fontSize: 8, letterSpacing: '0.1em', color: grey[700] }}>
+              <span
+                style={{
+                  fontFamily:      mono,
+                  fontSize:        8,
+                  letterSpacing:   '0.12em',
+                  color:           grey[700],
+                  border:          `1px solid ${grey[700]}`,
+                  padding:         '3px 8px',
+                  clipPath:        'polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 0 100%)',
+                }}
+              >
                 LOCKED
               </span>
             </div>
 
-            {/* Sign out */}
+            {/* Sign out row */}
             <div
               style={{
-                padding:      '16px 20px',
-                display:      'flex',
-                alignItems:   'center',
+                padding:        '16px 20px',
+                display:        'flex',
+                alignItems:     'center',
                 justifyContent: 'space-between',
               }}
             >
               <div>
-                <p style={{ fontFamily: mono, fontSize: 9, letterSpacing: '0.1em', color: grey[700], marginBottom: 4 }}>
+                <p style={{ fontFamily: mono, fontSize: 8, letterSpacing: '0.14em', color: grey[700], marginBottom: 4 }}>
                   SESSION
                 </p>
                 <p style={{ fontFamily: body, fontSize: 13, color: grey[500] }}>
@@ -164,20 +180,7 @@ export default async function SettingsPage() {
                 </p>
               </div>
               <SignOutButton redirectUrl="/">
-                <button
-                  style={{
-                    height:          34,
-                    padding:         '0 18px',
-                    backgroundColor: 'transparent',
-                    border:          `1px solid #ff444488`,
-                    borderRadius:    3,
-                    fontFamily:      mono,
-                    fontSize:        9,
-                    letterSpacing:   '0.12em',
-                    color:           '#ff6666',
-                    cursor:          'pointer',
-                  }}
-                >
+                <button className="btn-danger" style={{ height: 34, padding: '0 18px', fontSize: 9 }}>
                   SIGN OUT
                 </button>
               </SignOutButton>
@@ -186,5 +189,6 @@ export default async function SettingsPage() {
         </section>
       </div>
     </div>
+    </PageTransition>
   );
 }

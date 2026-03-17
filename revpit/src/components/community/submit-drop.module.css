@@ -1,0 +1,433 @@
+/* ── Wrapper ──────────────────────────────────────────────────────────────── */
+.wrap {
+  background: #1C1B19;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 0;
+}
+
+/* ── Type tab bar ─────────────────────────────────────────────────────────── */
+.tabBar {
+  display: flex;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tabBar::-webkit-scrollbar { display: none; }
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 16px;
+  height: 44px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6B6860;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 120ms ease, background 120ms ease, border-color 120ms ease;
+  flex-shrink: 0;
+}
+
+.tab:hover { color: #C4C3BE; }
+
+.tabActive {
+  color: #C8FF00;
+  background: rgba(200, 255, 0, 0.10);
+  border-bottom-color: #C8FF00;
+}
+
+/* ── Form body ────────────────────────────────────────────────────────────── */
+.body {
+  padding: 20px 20px 16px;
+}
+
+/* ── Fields ──────────────────────────────────────────────────────────────── */
+.field {
+  margin-bottom: 18px;
+}
+
+.label {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #6B6860;
+  margin-bottom: 7px;
+}
+
+.labelOptional::after {
+  content: ' — optional';
+  font-weight: 400;
+  color: #504F4B;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  background: #1C1B19;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0;
+  color: #F5F4F0;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 150ms ease;
+}
+
+.input {
+  height: 42px;
+  padding: 0 13px;
+}
+
+.textarea {
+  padding: 11px 13px;
+  resize: vertical;
+  min-height: 100px;
+  line-height: 1.55;
+}
+
+.input:focus,
+.textarea:focus {
+  border-color: #C8FF00;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: #504F4B;
+}
+
+.charCount {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: #504F4B;
+  text-align: right;
+  margin-top: 4px;
+}
+
+.fieldError {
+  display: block;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  color: #FF6B6B;
+  margin-top: 5px;
+}
+
+.hint {
+  display: block;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  color: #504F4B;
+  margin-top: 5px;
+  line-height: 1.4;
+}
+
+/* ── Tag selector ─────────────────────────────────────────────────────────── */
+.tagGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tagBtn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0;
+  color: #6B6860;
+  cursor: pointer;
+  transition: color 120ms ease, border-color 120ms ease, background 120ms ease;
+}
+
+.tagBtn:hover { color: #C4C3BE; border-color: rgba(255, 255, 255, 0.2); }
+
+.tagBtnActive {
+  color: #C8FF00;
+  border-color: rgba(200, 255, 0, 0.5);
+  background: rgba(200, 255, 0, 0.07);
+}
+
+/* ── Image upload zone ────────────────────────────────────────────────────── */
+.dropZone {
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  border-radius: 0;
+  padding: 32px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 150ms ease, background 150ms ease;
+}
+
+.dropZone:hover,
+.dropZoneOver {
+  border-color: #C8FF00;
+  background: rgba(200, 255, 0, 0.03);
+}
+
+.dropZoneIcon {
+  color: #504F4B;
+  margin-bottom: 10px;
+}
+
+.dropZoneText {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6B6860;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.dropZoneHint {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  color: #504F4B;
+}
+
+.previewGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.previewItem {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.previewImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.previewRemove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 20px;
+  height: 20px;
+  background: rgba(14, 13, 12, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0;
+  color: #C4C3BE;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 120ms ease;
+}
+
+.previewRemove:hover { background: rgba(255, 59, 47, 0.7); color: #fff; }
+
+/* ── Poll options ─────────────────────────────────────────────────────────── */
+.pollOptions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pollOptionRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pollOptionRemove {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0;
+  color: #6B6860;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 120ms ease, border-color 120ms ease;
+}
+
+.pollOptionRemove:hover { color: #FF3B2F; border-color: rgba(255, 59, 47, 0.4); }
+
+.addOptionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #6B6860;
+  background: transparent;
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 0;
+  padding: 7px 14px;
+  cursor: pointer;
+  width: 100%;
+  justify-content: center;
+  transition: color 120ms ease, border-color 120ms ease;
+}
+
+.addOptionBtn:hover { color: #C8FF00; border-color: rgba(200, 255, 0, 0.3); }
+
+/* ── Duration selector ────────────────────────────────────────────────────── */
+.durationGroup {
+  display: flex;
+  gap: 8px;
+}
+
+.durationBtn {
+  flex: 1;
+  height: 36px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #6B6860;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0;
+  cursor: pointer;
+  transition: color 120ms ease, border-color 120ms ease, background 120ms ease;
+}
+
+.durationBtn:hover { color: #C4C3BE; }
+
+.durationBtnActive {
+  color: #C8FF00;
+  border-color: rgba(200, 255, 0, 0.4);
+  background: rgba(200, 255, 0, 0.07);
+}
+
+/* ── Build update callout ─────────────────────────────────────────────────── */
+.buildCallout {
+  border: 1px solid rgba(200, 255, 0, 0.2);
+  border-left: 2px solid #C8FF00;
+  background: rgba(200, 255, 0, 0.04);
+  padding: 12px 16px;
+  margin-bottom: 18px;
+}
+
+.buildCalloutHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.buildCalloutLabel {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #C8FF00;
+}
+
+.buildCalloutPts {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: #C8FF00;
+  background: rgba(200, 255, 0, 0.1);
+  border: 1px solid rgba(200, 255, 0, 0.3);
+  padding: 2px 8px;
+}
+
+.buildCalloutCar {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: #F5F4F0;
+  font-weight: 600;
+}
+
+.buildCalloutSpec {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: #898882;
+  margin-top: 2px;
+}
+
+/* ── Error banner ─────────────────────────────────────────────────────────── */
+.errorBanner {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  color: #FF6B6B;
+  background: rgba(255, 107, 107, 0.08);
+  border: 1px solid rgba(255, 107, 107, 0.25);
+  border-radius: 0;
+  padding: 10px 14px;
+  margin-bottom: 18px;
+}
+
+/* ── Footer ──────────────────────────────────────────────────────────────── */
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 20px 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.pitLabel {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: #504F4B;
+  letter-spacing: 0.06em;
+}
+
+.pitLabelName {
+  color: #C8FF00;
+  margin-left: 4px;
+}
+
+.submitBtn {
+  height: 42px;
+  padding: 0 28px;
+  background: #C8FF00;
+  color: #0E0D0C;
+  border: none;
+  border-radius: 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+  transition: opacity 150ms ease, transform 150ms ease;
+  white-space: nowrap;
+}
+
+.submitBtn:hover:not(:disabled) { opacity: 0.88; transform: translateY(-1px); }
+.submitBtn:active                { transform: translateY(0); }
+.submitBtn:disabled              { opacity: 0.4; cursor: not-allowed; }

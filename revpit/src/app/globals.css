@@ -1,0 +1,938 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-display: var(--font-display);
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  /* ── REVPIT Dark Brand — always dark, no light mode ──────────────────────── */
+  --background:             oklch(0.088 0.003 75);   /* #0E0D0C */
+  --foreground:             oklch(0.963 0.004 80);   /* #F5F4F0 */
+  --card:                   oklch(0.148 0.004 75);   /* #1E1D1B */
+  --card-foreground:        oklch(0.963 0.004 80);
+  --popover:                oklch(0.148 0.004 75);
+  --popover-foreground:     oklch(0.963 0.004 80);
+  --primary:                oklch(0.946 0.233 128);  /* #C8FF00 accent */
+  --primary-foreground:     oklch(0.088 0.003 75);   /* black on accent */
+  --secondary:              oklch(0.148 0.004 75);
+  --secondary-foreground:   oklch(0.963 0.004 80);
+  --muted:                  oklch(0.195 0.004 75);
+  --muted-foreground:       oklch(0.573 0.006 75);   /* #898882 */
+  --accent:                 oklch(0.946 0.233 128);
+  --accent-foreground:      oklch(0.088 0.003 75);
+  --destructive:            oklch(0.62 0.22 27);
+  --border:                 oklch(1 0 0 / 10%);
+  --input:                  oklch(1 0 0 / 8%);
+  --ring:                   oklch(0.946 0.233 128 / 50%);
+  --chart-1:                oklch(0.946 0.233 128);  /* accent */
+  --chart-2:                oklch(0.787 0.005 75);   /* grey[300] */
+  --chart-3:                oklch(0.573 0.006 75);   /* grey[500] */
+  --chart-4:                oklch(0.352 0.006 75);   /* grey[700] */
+  --chart-5:                oklch(0.148 0.004 75);   /* grey[900] */
+  --radius:                 0.375rem;                /* tight for motorsport aesthetic */
+  --sidebar:                oklch(0.148 0.004 75);
+  --sidebar-foreground:     oklch(0.963 0.004 80);
+  --sidebar-primary:        oklch(0.946 0.233 128);
+  --sidebar-primary-foreground: oklch(0.088 0.003 75);
+  --sidebar-accent:         oklch(0.195 0.004 75);
+  --sidebar-accent-foreground: oklch(0.963 0.004 80);
+  --sidebar-border:         oklch(1 0 0 / 10%);
+  --sidebar-ring:           oklch(0.946 0.233 128 / 50%);
+
+  /* ── REVPIT v2 Design Tokens ────────────────────────────────────────────── */
+  --bg-base:        #0E0D0C;
+  --bg-surface:     #1C1B19;
+  --bg-elevated:    #252422;
+  --bg-overlay:     rgba(14,13,12,0.92);
+  --accent:         #C8FF00;
+  --accent-dim:     rgba(200,255,0,0.08);
+  --accent-glow:    rgba(200,255,0,0.30);
+  --accent-border:  rgba(200,255,0,0.20);
+  --gold:           #D4A500;
+  --gold-bright:    #FFD000;
+  --gold-dim:       rgba(212,165,0,0.10);
+  --error:          #FF3B2F;
+  --warning:        #FF9500;
+  --success:        #34C759;
+  --text-primary:   #F5F4F0;
+  --text-secondary: #A8A59C;
+  --text-muted:     #6B6860;
+  --border:         rgba(255,255,255,0.06);
+  --border-hover:   rgba(255,255,255,0.12);
+  --border-accent:  rgba(200,255,0,0.20);
+  --page-accent:    #C8FF00;
+  --transition-fast:   150ms ease;
+  --transition-base:   250ms ease;
+  --transition-slow:   400ms ease-out;
+  --transition-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ── REVPIT Custom Properties ────────────────────────────────────────────── */
+  --rp-accent:              #C8FF00;
+  --rp-black:               #0E0D0C;
+  --rp-white:               #F5F4F0;
+  --rp-grey-100:            #F0EFEB;
+  --rp-grey-300:            #C4C3BE;
+  --rp-grey-500:            #898882;
+  --rp-grey-700:            #504F4B;
+  --rp-grey-900:            #1E1D1B;
+  --rp-accent-rgb:          200, 255, 0;
+  --rp-glow-sm:             0 0 10px rgba(200, 255, 0, 0.2);
+  --rp-glow-md:             0 0 20px rgba(200, 255, 0, 0.3);
+  --rp-glow-lg:             0 0 36px rgba(200, 255, 0, 0.4), 0 0 8px rgba(200, 255, 0, 0.2);
+  --rp-shadow-card:         0 2px 8px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.7);
+  --rp-shadow-raised:       0 4px 16px rgba(0, 0, 0, 0.6), 0 2px 4px rgba(0, 0, 0, 0.8);
+  --rp-t-fast:              150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --rp-t-base:              200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --rp-t-slow:              300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dark class = same as root — REVPIT has no light mode */
+.dark {
+  --background:             oklch(0.088 0.003 75);
+  --foreground:             oklch(0.963 0.004 80);
+  --card:                   oklch(0.148 0.004 75);
+  --card-foreground:        oklch(0.963 0.004 80);
+  --popover:                oklch(0.148 0.004 75);
+  --popover-foreground:     oklch(0.963 0.004 80);
+  --primary:                oklch(0.946 0.233 128);
+  --primary-foreground:     oklch(0.088 0.003 75);
+  --secondary:              oklch(0.148 0.004 75);
+  --secondary-foreground:   oklch(0.963 0.004 80);
+  --muted:                  oklch(0.195 0.004 75);
+  --muted-foreground:       oklch(0.573 0.006 75);
+  --accent:                 oklch(0.946 0.233 128);
+  --accent-foreground:      oklch(0.088 0.003 75);
+  --destructive:            oklch(0.704 0.191 22.216);
+  --border:                 oklch(1 0 0 / 10%);
+  --input:                  oklch(1 0 0 / 8%);
+  --ring:                   oklch(0.946 0.233 128 / 50%);
+  --chart-1:                oklch(0.946 0.233 128);
+  --chart-2:                oklch(0.787 0.005 75);
+  --chart-3:                oklch(0.573 0.006 75);
+  --chart-4:                oklch(0.352 0.006 75);
+  --chart-5:                oklch(0.148 0.004 75);
+  --sidebar:                oklch(0.148 0.004 75);
+  --sidebar-foreground:     oklch(0.963 0.004 80);
+  --sidebar-primary:        oklch(0.946 0.233 128);
+  --sidebar-primary-foreground: oklch(0.088 0.003 75);
+  --sidebar-accent:         oklch(0.195 0.004 75);
+  --sidebar-accent-foreground: oklch(0.963 0.004 80);
+  --sidebar-border:         oklch(1 0 0 / 10%);
+  --sidebar-ring:           oklch(0.946 0.233 128 / 50%);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+
+  /* ── Text selection ──────────────────────────────────────────────────────── */
+  ::selection {
+    background-color: rgba(200, 255, 0, 0.25);
+    color: #F5F4F0;
+  }
+
+  /* ── Scrollbar ───────────────────────────────────────────────────────────── */
+  ::-webkit-scrollbar               { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track         { background: #0E0D0C; }
+  ::-webkit-scrollbar-thumb         { background: #504F4B; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover   { background: #898882; }
+  ::-webkit-scrollbar-corner        { background: #0E0D0C; }
+
+  /* ── Global interaction transitions ─────────────────────────────────────── */
+  a {
+    transition: color var(--rp-t-fast), opacity var(--rp-t-fast);
+  }
+  button {
+    cursor: pointer;
+    transition: background-color var(--rp-t-fast), box-shadow var(--rp-t-fast),
+                opacity var(--rp-t-fast), transform var(--rp-t-fast);
+  }
+  button:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+  button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  /* ── Focus ring ──────────────────────────────────────────────────────────── */
+  :focus-visible {
+    outline: 2px solid #C8FF00;
+    outline-offset: 2px;
+  }
+}
+
+/* ─── REVPIT Keyframes ────────────────────────────────────────────────────── */
+
+/* Page-level route transition (used by PageTransition component) */
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
+/* Skeleton shimmer (percentage-based so it works at any width) */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+@keyframes rp-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes rp-slide-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes rp-slide-in-left {
+  from { opacity: 0; transform: translateX(-16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes rp-shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+@keyframes rp-pulse-glow {
+  0%, 100% { box-shadow: 0 0 8px rgba(200, 255, 0, 0.2); }
+  50%       { box-shadow: 0 0 24px rgba(200, 255, 0, 0.5); }
+}
+
+@keyframes rp-pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.75); }
+}
+
+@keyframes rp-scan-line {
+  0%   { transform: translateY(-100%); opacity: 0; }
+  10%  { opacity: 0.6; }
+  90%  { opacity: 0.6; }
+  100% { transform: translateY(400%); opacity: 0; }
+}
+
+/* Scanline sweep — animates top: 0 → 100% for profile/cover hero elements */
+@keyframes rp-scanline {
+  0%   { top: -2px; opacity: 0; }
+  4%   { opacity: 1; }
+  96%  { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+@keyframes rp-ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ─── REVPIT Utility Classes ──────────────────────────────────────────────── */
+
+/* ── Entrance animations ──────────────────────────────────────────────────── */
+.rp-fade-in     { animation: rp-fade-in 250ms ease-out both; }
+.rp-slide-up    { animation: rp-slide-up 250ms ease-out both; }
+.rp-slide-left  { animation: rp-slide-in-left 250ms ease-out both; }
+
+/* Stagger children */
+.rp-stagger > *:nth-child(1)  { animation-delay: 0ms; }
+.rp-stagger > *:nth-child(2)  { animation-delay: 40ms; }
+.rp-stagger > *:nth-child(3)  { animation-delay: 80ms; }
+.rp-stagger > *:nth-child(4)  { animation-delay: 120ms; }
+.rp-stagger > *:nth-child(5)  { animation-delay: 160ms; }
+.rp-stagger > *:nth-child(6)  { animation-delay: 200ms; }
+
+/* ── Card ─────────────────────────────────────────────────────────────────── */
+.rp-card {
+  background-color: var(--bg-surface, #1C1B19);
+  border: 1px solid var(--border, rgba(255,255,255,0.06));
+  border-radius: 0;
+  box-shadow: var(--rp-shadow-card);
+  transition: border-color var(--rp-t-base), box-shadow var(--rp-t-base), transform var(--rp-t-base);
+}
+.rp-card:hover {
+  border-color: var(--border-hover, rgba(255,255,255,0.12));
+  box-shadow: var(--rp-shadow-raised);
+  transform: translateY(-1px);
+}
+.rp-card-accent {
+  background-color: var(--bg-surface, #1C1B19);
+  border: 1px solid rgba(200, 255, 0, 0.18);
+  border-radius: 0;
+  box-shadow: 0 0 0 0 rgba(200, 255, 0, 0);
+  transition: border-color var(--rp-t-base), box-shadow var(--rp-t-base);
+}
+.rp-card-accent:hover {
+  border-color: rgba(200, 255, 0, 0.35);
+  box-shadow: var(--rp-glow-sm);
+}
+
+/* ── Badge / Label ────────────────────────────────────────────────────────── */
+.rp-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.rp-badge-accent {
+  background-color: rgba(200, 255, 0, 0.12);
+  color: #C8FF00;
+  border: 1px solid rgba(200, 255, 0, 0.25);
+}
+.rp-badge-muted {
+  background-color: rgba(255, 255, 255, 0.06);
+  color: #898882;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.rp-badge-live {
+  background-color: rgba(200, 255, 0, 0.12);
+  color: #C8FF00;
+  border: 1px solid rgba(200, 255, 0, 0.3);
+  animation: rp-pulse-glow 2s ease-in-out infinite;
+}
+
+/* ── Live dot indicator ───────────────────────────────────────────────────── */
+.rp-live-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #C8FF00;
+  flex-shrink: 0;
+  animation: rp-pulse-dot 1.5s ease-in-out infinite;
+}
+
+/* ── Dot-grid background texture ─────────────────────────────────────────── */
+.rp-grid-bg {
+  background-image: radial-gradient(circle, rgba(80, 79, 75, 0.4) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+.rp-grid-bg-fine {
+  background-image: radial-gradient(circle, rgba(80, 79, 75, 0.35) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* ── Accent glow ──────────────────────────────────────────────────────────── */
+.rp-glow-sm  { box-shadow: var(--rp-glow-sm); }
+.rp-glow-md  { box-shadow: var(--rp-glow-md); }
+.rp-glow-lg  { box-shadow: var(--rp-glow-lg); }
+.rp-glow-pulse { animation: rp-pulse-glow 2.5s ease-in-out infinite; }
+
+/* ── Accent button ────────────────────────────────────────────────────────── */
+.rp-btn-accent {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 20px;
+  height: 40px;
+  background-color: #C8FF00;
+  color: #0E0D0C;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--rp-t-fast), box-shadow var(--rp-t-fast), transform var(--rp-t-fast);
+}
+.rp-btn-accent:hover {
+  background-color: #d4ff1a;
+  box-shadow: var(--rp-glow-md);
+}
+.rp-btn-accent:active {
+  transform: scale(0.97);
+  box-shadow: var(--rp-glow-sm);
+}
+
+/* ── Ghost button ─────────────────────────────────────────────────────────── */
+.rp-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 16px;
+  height: 36px;
+  background-color: transparent;
+  color: #898882;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color var(--rp-t-fast), border-color var(--rp-t-fast), background-color var(--rp-t-fast);
+}
+.rp-btn-ghost:hover {
+  color: #F5F4F0;
+  border-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+/* ── Shimmer skeleton loader ──────────────────────────────────────────────── */
+.rp-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(80, 79, 75, 0.3) 0%,
+    rgba(80, 79, 75, 0.6) 40%,
+    rgba(80, 79, 75, 0.3) 80%
+  );
+  background-size: 800px 100%;
+  animation: rp-shimmer 1.6s ease-in-out infinite;
+  border-radius: 4px;
+}
+
+/* ── Corner bracket decorators ────────────────────────────────────────────── */
+.rp-corners {
+  position: relative;
+}
+.rp-corners::before,
+.rp-corners::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-color: rgba(200, 255, 0, 0.4);
+  border-style: solid;
+  pointer-events: none;
+}
+.rp-corners::before {
+  top: 0;
+  left: 0;
+  border-width: 1.5px 0 0 1.5px;
+}
+.rp-corners::after {
+  bottom: 0;
+  right: 0;
+  border-width: 0 1.5px 1.5px 0;
+}
+
+/* ── Divider with label ───────────────────────────────────────────────────── */
+.rp-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0;
+}
+.rp-divider::before,
+.rp-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+/* ── Mono label ───────────────────────────────────────────────────────────── */
+.rp-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #898882;
+}
+.rp-label-accent {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #C8FF00;
+}
+
+/* ── Stat number ──────────────────────────────────────────────────────────── */
+.rp-stat {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  letter-spacing: -0.01em;
+}
+
+/* ── Horizontal rule ──────────────────────────────────────────────────────── */
+.rp-hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin: 0;
+}
+
+/* ── Input ────────────────────────────────────────────────────────────────── */
+.rp-input {
+  width: 100%;
+  height: 40px;
+  padding: 0 14px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: #F5F4F0;
+  outline: none;
+  transition: border-color var(--rp-t-fast), box-shadow var(--rp-t-fast);
+}
+.rp-input::placeholder {
+  color: #504F4B;
+}
+.rp-input:focus {
+  border-color: rgba(200, 255, 0, 0.4);
+  box-shadow: 0 0 0 3px rgba(200, 255, 0, 0.1);
+}
+
+/* ── Page header ──────────────────────────────────────────────────────────── */
+.rp-page-header {
+  padding: 40px 48px 36px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@media (max-width: 768px) {
+  .rp-page-header { padding: 28px 20px 24px; }
+}
+
+/* ── Skeleton loader ──────────────────────────────────────────────────────── */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #1C1B19 25%,
+    #252422 50%,
+    #1C1B19 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 2px;
+}
+
+/* ── Button press feedback (for <a> links styled as CTAs) ────────────────── */
+.btn-press:active {
+  transform: scale(0.97);
+  transition: transform 100ms ease;
+}
+
+/* ─── REVPIT Global Responsive Utilities ──────────────────────────────────── */
+
+/* Smooth anchor scrolling */
+html { scroll-behavior: smooth; }
+
+/* Prevent horizontal overflow on mobile */
+body { overflow-x: hidden; }
+
+/* ── Authenticated app: main content needs top padding on mobile for hamburger */
+.rp-main-content {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 100vh;
+}
+@media (max-width: 767px) {
+  .rp-main-content {
+    padding-top: 60px;
+  }
+}
+
+/* Remove default number input spinners */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+input[type=number] { -moz-appearance: textfield; }
+
+/* ── Landing page hero responsive ────────────────────────────────────────── */
+.rp-hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 480px;
+  gap: 60px;
+  align-items: center;
+}
+
+@media (max-width: 960px) {
+  .rp-hero-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+}
+
+/* ── Landing page navbar responsive ──────────────────────────────────────── */
+.rp-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+}
+
+@media (max-width: 720px) {
+  .rp-nav-links { display: none; }
+}
+
+/* ── Landing page features grid ──────────────────────────────────────────── */
+.rp-features-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+}
+
+@media (max-width: 960px) {
+  .rp-features-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 540px) {
+  .rp-features-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Stats bar responsive ─────────────────────────────────────────────────── */
+.rp-stats-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+/* ── Dashboard layout responsive ─────────────────────────────────────────── */
+.rp-dashboard-sidebar {
+  width: 228px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .rp-dashboard-sidebar { display: none; }
+}
+
+/* ── Dashboard stat cards ─────────────────────────────────────────────────── */
+.rp-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 900px) {
+  .rp-stat-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 600px) {
+  .rp-stat-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Dashboard bottom grid ────────────────────────────────────────────────── */
+.rp-bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .rp-bottom-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Page padding responsive ──────────────────────────────────────────────── */
+.rp-page-pad {
+  padding: 40px 48px;
+}
+
+@media (max-width: 768px) {
+  .rp-page-pad { padding: 24px 20px; }
+}
+
+/* ── Clubs hero responsive ────────────────────────────────────────────────── */
+.rp-clubs-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+}
+
+@media (max-width: 640px) {
+  .rp-clubs-hero { flex-direction: column; align-items: flex-start; }
+}
+
+/* ── Leaderboard bottom widgets ───────────────────────────────────────────── */
+.rp-lb-widgets {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .rp-lb-widgets { grid-template-columns: 1fr; }
+}
+
+/* ─── REVPIT v2 Keyframes ─────────────────────────────────────────────────── */
+
+@keyframes score-pulse {
+  0%, 100% { text-shadow: 0 0 12px rgba(200,255,0,0.15); }
+  50%       { text-shadow: 0 0 28px rgba(200,255,0,0.50), 0 0 8px rgba(200,255,0,0.30); }
+}
+
+@keyframes glow-ping {
+  0%   { transform: scale(1);   opacity: 1;   }
+  70%  { transform: scale(2.2); opacity: 0.3; }
+  100% { transform: scale(1);   opacity: 1;   }
+}
+
+@keyframes stat-scale-in {
+  from { opacity: 0; transform: scale(0.92) translateY(8px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0);   }
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(100%); }
+  to   { opacity: 1; transform: translateX(0);    }
+}
+
+@keyframes toast-out {
+  from { opacity: 1; transform: translateX(0);    }
+  to   { opacity: 0; transform: translateX(110%); }
+}
+
+@keyframes accent-bar-grow {
+  from { width: 0; }
+  to   { width: 100%; }
+}
+
+/* ─── REVPIT v2 Utility Classes ───────────────────────────────────────────── */
+
+/* ── Primary CTA button (acid-lime, clipped corner) ──────────────────────── */
+.btn-primary {
+  display:        inline-flex;
+  align-items:    center;
+  justify-content: center;
+  gap:            8px;
+  padding:        0 24px;
+  height:         42px;
+  background:     var(--accent, #C8FF00);
+  color:          #0E0D0C;
+  font-family:    var(--font-display);
+  font-size:      14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border:         none;
+  border-radius:  0;
+  cursor:         pointer;
+  clip-path:      polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+  transition:     background var(--transition-fast, 150ms ease),
+                  box-shadow  var(--transition-fast, 150ms ease),
+                  transform   var(--transition-fast, 150ms ease);
+}
+.btn-primary:hover {
+  background:  #D4FF00;
+  box-shadow:  0 4px 20px rgba(200,255,0,0.28);
+  transform:   translateY(-1px);
+}
+.btn-primary:active {
+  transform:  scale(0.97) translateY(0);
+  box-shadow: none;
+}
+.btn-primary:focus-visible {
+  outline:        2px solid var(--accent, #C8FF00);
+  outline-offset: 3px;
+}
+.btn-primary:disabled {
+  opacity:    0.35;
+  cursor:     not-allowed;
+  transform:  none;
+  box-shadow: none;
+  clip-path:  none;
+}
+
+/* ── Ghost button ─────────────────────────────────────────────────────────── */
+.btn-ghost {
+  display:        inline-flex;
+  align-items:    center;
+  justify-content: center;
+  gap:            8px;
+  padding:        0 18px;
+  height:         38px;
+  background:     transparent;
+  color:          var(--text-secondary, #A8A59C);
+  font-family:    var(--font-body);
+  font-size:      13px;
+  font-weight:    500;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  border:         1px solid var(--border, rgba(255,255,255,0.06));
+  border-radius:  0;
+  cursor:         pointer;
+  transition:     color          var(--transition-fast, 150ms ease),
+                  border-color   var(--transition-fast, 150ms ease),
+                  background     var(--transition-fast, 150ms ease);
+}
+.btn-ghost:hover {
+  color:        var(--text-primary, #F5F4F0);
+  border-color: var(--border-hover, rgba(255,255,255,0.12));
+  background:   rgba(255,255,255,0.03);
+}
+.btn-ghost:focus-visible {
+  outline: 2px solid var(--accent, #C8FF00);
+  outline-offset: 2px;
+}
+
+/* ── Score pulse (text-shadow glow animation) ─────────────────────────────── */
+.score-pulse {
+  animation: score-pulse 4s ease-in-out infinite;
+}
+
+/* ── Hover shift (cards, table rows) ─────────────────────────────────────── */
+.hover-shift {
+  transition: transform var(--transition-fast, 150ms ease),
+              border-color var(--transition-fast, 150ms ease);
+}
+.hover-shift:hover {
+  transform: translateX(3px);
+}
+
+/* ── Avatar glow rings ────────────────────────────────────────────────────── */
+.avatar-glow {
+  box-shadow: 0 0 0 2px #0E0D0C, 0 0 0 4px #C8FF00, 0 0 16px rgba(200,255,0,0.30);
+}
+.avatar-glow-gold {
+  box-shadow: 0 0 0 2px #0E0D0C, 0 0 0 4px #D4A500, 0 0 16px rgba(212,165,0,0.30);
+}
+
+/* ── Stat card entrance animation ─────────────────────────────────────────── */
+.stat-card-enter {
+  animation: stat-scale-in 350ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.stat-card-enter:nth-child(1) { animation-delay: 0ms;   }
+.stat-card-enter:nth-child(2) { animation-delay: 80ms;  }
+.stat-card-enter:nth-child(3) { animation-delay: 160ms; }
+.stat-card-enter:nth-child(4) { animation-delay: 240ms; }
+.stat-card-enter:nth-child(5) { animation-delay: 320ms; }
+.stat-card-enter:nth-child(6) { animation-delay: 400ms; }
+
+/* ── Input/select/textarea enhanced focus ─────────────────────────────────── */
+input:focus,
+textarea:focus,
+select:focus {
+  outline:      none;
+  border-color: var(--accent, #C8FF00) !important;
+  box-shadow:   0 0 0 3px rgba(200,255,0,0.10);
+  transition:   border-color 200ms ease, box-shadow 200ms ease;
+}
+
+/* ── Leaderboard gold row ─────────────────────────────────────────────────── */
+.lb-row-gold {
+  background-color: rgba(18, 14, 9, 1);
+  border-left:      4px solid var(--gold, #D4A500) !important;
+}
+.lb-row-gold .lb-score {
+  color: var(--gold, #D4A500);
+}
+
+/* ── Skeleton shimmer (upgraded) ─────────────────────────────────────────── */
+.skeleton-v2 {
+  background: linear-gradient(
+    90deg,
+    #1C1B19 25%,
+    #2A2926 50%,
+    #1C1B19 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+  border-radius: 0;
+}
+
+/* ── Live realtime dot (with ring ping) ───────────────────────────────────── */
+.rp-live-ping {
+  position:   relative;
+  display:    inline-block;
+  width:      8px;
+  height:     8px;
+  flex-shrink: 0;
+}
+.rp-live-ping::before {
+  content:          '';
+  position:         absolute;
+  inset:            0;
+  border-radius:    50%;
+  background-color: #C8FF00;
+  animation:        glow-ping 1.8s ease-in-out infinite;
+}
+.rp-live-ping::after {
+  content:          '';
+  position:         absolute;
+  inset:            1px;
+  border-radius:    50%;
+  background-color: #C8FF00;
+}
+
+/* ── Red-accent page override ─────────────────────────────────────────────── */
+.page-red-accent {
+  --page-accent:       #FF3C28;
+  --accent:            #FF3C28;
+  --accent-dim:        rgba(255,60,40,0.08);
+  --accent-glow:       rgba(255,60,40,0.25);
+  --accent-border:     rgba(255,60,40,0.20);
+  --rp-accent:         #FF3C28;
+  --rp-glow-sm:        0 0 10px rgba(255,60,40,0.18);
+  --rp-glow-md:        0 0 20px rgba(255,60,40,0.28);
+}
+
+/* ── Progress bar glow variant (quest/challenge) ──────────────────────────── */
+.progress-glow {
+  box-shadow: 0 0 8px var(--accent-glow, rgba(200,255,0,0.30));
+}

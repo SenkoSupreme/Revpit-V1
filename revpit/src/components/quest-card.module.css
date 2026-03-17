@@ -1,0 +1,129 @@
+/* ── Card ────────────────────────────────────────────────────────────────── */
+.card {
+  position: relative;
+  border-radius: 3px;
+  padding: 22px 22px 18px;
+  border: 1px solid #2A2928;
+  border-left-width: 3px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+}
+
+.cardActive {
+  background: #1A1917;
+  border-left-color: #C8FF00;
+}
+
+.cardActive:hover {
+  border-color: #504F4B;
+  border-left-color: #C8FF00;
+}
+
+.cardPending {
+  background: #181716;
+  border-left-color: #898882;
+}
+
+.cardCompleted {
+  background: #161514;
+  border-left-color: #C8FF0066;
+  opacity: 0.85;
+}
+
+.cardCompleted:hover {
+  opacity: 1;
+}
+
+/* ── Progress bar ────────────────────────────────────────────────────────── */
+.progressTrack {
+  height: 3px;
+  background: #2A2928;
+  border-radius: 2px;
+  overflow: hidden;
+  margin: 14px 0 0;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.6s ease;
+}
+
+.progressFillActive    { background: #C8FF00; }
+.progressFillPending   { background: #898882; }
+.progressFillCompleted { background: #C8FF0099; }
+
+/* ── Status badges ───────────────────────────────────────────────────────── */
+.badgePending {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #898882;
+  background: rgba(137, 136, 130, 0.1);
+  border: 1px solid rgba(137, 136, 130, 0.25);
+  border-radius: 3px;
+  padding: 4px 9px;
+}
+
+.badgeApproved {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #C8FF00;
+  background: rgba(200, 255, 0, 0.08);
+  border: 1px solid rgba(200, 255, 0, 0.25);
+  border-radius: 3px;
+  padding: 4px 9px;
+}
+
+/* Pulsing dot inside pending badge */
+.pendingDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #898882;
+  animation: dotPulse 2s ease-in-out infinite;
+}
+
+@keyframes dotPulse {
+  0%,  100% { opacity: 1;   transform: scale(1); }
+  50%        { opacity: 0.3; transform: scale(0.6); }
+}
+
+/* ── Points badge ────────────────────────────────────────────────────────── */
+.pointsBadge {
+  display: inline-flex;
+  align-items: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #C8FF00;
+  background: rgba(200, 255, 0, 0.1);
+  border: 1px solid rgba(200, 255, 0, 0.22);
+  border-radius: 3px;
+  padding: 4px 10px;
+}
+
+/* ── Difficulty pip ──────────────────────────────────────────────────────── */
+.diffPip {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-right: 3px;
+}

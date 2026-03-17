@@ -1,0 +1,26 @@
+# Dependencies
+revpit/node_modules/
+node_modules/
+
+# Next.js build output
+revpit/.next/
+revpit/out/
+
+# Environment variables — NEVER commit these
+revpit/.env
+revpit/.env.local
+revpit/.env.*.local
+.env
+.env.local
+
+# TypeScript build info
+revpit/tsconfig.tsbuildinfo
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Supabase local
+revpit/.supabase/

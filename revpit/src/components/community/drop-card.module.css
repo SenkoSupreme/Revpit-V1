@@ -1,0 +1,322 @@
+/* ── Card ─────────────────────────────────────────────────────────────────── */
+.card {
+  position:    relative;
+  background:  #141210;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 0;
+  transition:  background 140ms ease;
+}
+
+.card:hover {
+  background: #1C1B19;
+}
+
+.cardBuildUpdate {
+  border-left: 2px solid #C8FF00;
+}
+
+/* ── Hero image (image type — full bleed) ─────────────────────────────────── */
+.heroWrap {
+  position: relative;
+  overflow: hidden;
+}
+
+.heroImage {
+  width:    100%;
+  height:   280px;
+  display:  block;
+  object-fit: cover;
+  transition: opacity 120ms ease;
+}
+
+.card:hover .heroImage {
+  opacity: 0.92;
+}
+
+/* NEW DROP overlay chip on hero images */
+.newChipOverlay {
+  position:    absolute;
+  top:         10px;
+  left:        10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size:   9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color:       #0E0D0C;
+  background:  #C8FF00;
+  padding:     3px 7px;
+}
+
+/* NEW chip inline (non-image drops) */
+.newChip {
+  font-family: 'JetBrains Mono', monospace;
+  font-size:   8px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color:       #C8FF00;
+  background:  rgba(200, 255, 0, 0.12);
+  border:      1px solid rgba(200, 255, 0, 0.3);
+  padding:     1px 5px;
+}
+
+/* ── Card inner (padding wrapper) ─────────────────────────────────────────── */
+.cardInner {
+  padding: 14px 18px 12px;
+}
+
+/* ── Pin banner ───────────────────────────────────────────────────────────── */
+.pinBanner {
+  display:     flex;
+  align-items: center;
+  gap:         6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size:   9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color:       #C8FF00;
+  padding:     6px 18px;
+  background:  rgba(200, 255, 0, 0.06);
+  border-bottom: 1px solid rgba(200, 255, 0, 0.1);
+}
+
+/* ── Meta row ─────────────────────────────────────────────────────────────── */
+.meta {
+  display:     flex;
+  align-items: center;
+  flex-wrap:   wrap;
+  gap:         6px;
+  margin-bottom: 7px;
+}
+
+.pitName {
+  font-family:    'JetBrains Mono', monospace;
+  font-size:      10px;
+  font-weight:    700;
+  letter-spacing: 0.06em;
+  color:          #C8FF00;
+  text-decoration: none;
+}
+
+.pitName:hover { text-decoration: underline; text-underline-offset: 2px; }
+
+.metaDot {
+  width:        2px;
+  height:       2px;
+  border-radius: 50%;
+  background:   #504F4B;
+  flex-shrink:  0;
+}
+
+.author {
+  font-family: 'DM Sans', sans-serif;
+  font-size:   12px;
+  color:       #898882;
+  text-decoration: none;
+}
+
+.author:hover { color: #F5F4F0; }
+
+.timeAgo {
+  font-family: 'JetBrains Mono', monospace;
+  font-size:   10px;
+  color:       #504F4B;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+/* ── Tier badges ──────────────────────────────────────────────────────────── */
+.tierBadge {
+  display:     inline-flex;
+  align-items: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size:   9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding:     2px 6px;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 0;
+  white-space: nowrap;
+}
+
+.tierElite    { color: #D4A500; border-color: rgba(212, 165,   0, 0.35); background: rgba(212, 165,   0, 0.08); }
+.tierPro      { color: #C8FF00; border-color: rgba(200, 255,   0, 0.35); background: rgba(200, 255,   0, 0.08); }
+.tierAdvanced { color: #E8A838; border-color: rgba(232, 168,  56, 0.35); background: rgba(232, 168,  56, 0.08); }
+.tierStarter  { color: #898882; border-color: rgba(137, 136, 130, 0.25); background: rgba(137, 136, 130, 0.06); }
+
+/* ── Title ────────────────────────────────────────────────────────────────── */
+.title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size:   24px;
+  letter-spacing: 0.04em;
+  color:       #F5F4F0;
+  line-height: 1.1;
+  text-decoration: none;
+  display:     block;
+  margin-bottom: 8px;
+  transition:  color 120ms ease;
+}
+
+.title:hover { color: #C8FF00; }
+
+/* ── Tag chip ─────────────────────────────────────────────────────────────── */
+.tag {
+  display:     inline-flex;
+  align-items: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size:   9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding:     2px 7px;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 0;
+  margin-bottom: 8px;
+}
+
+.tagBuildUpdate { color: #C8FF00; border-color: rgba(200, 255,   0, 0.4); background: rgba(200, 255,   0, 0.07); }
+.tagQuestion    { color: #60AFFF; border-color: rgba( 96, 175, 255, 0.4); background: rgba( 96, 175, 255, 0.07); }
+.tagEvent       { color: #E8A838; border-color: rgba(232, 168,  56, 0.4); background: rgba(232, 168,  56, 0.07); }
+.tagNews        { color: #A78BFA; border-color: rgba(167, 139, 250, 0.4); background: rgba(167, 139, 250, 0.07); }
+.tagMeme        { color: #F97316; border-color: rgba(249, 115,  22, 0.4); background: rgba(249, 115,  22, 0.07); }
+.tagDiscussion  { color: #898882; border-color: rgba(137, 136, 130, 0.35); background: rgba(137, 136, 130, 0.06); }
+
+/* ── Body preview ─────────────────────────────────────────────────────────── */
+.body {
+  font-family: 'DM Sans', sans-serif;
+  font-size:   14px;
+  line-height: 1.55;
+  color:       #A8A59C;
+  margin:      0 0 10px;
+  display:     -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow:    hidden;
+}
+
+/* ── Poll ─────────────────────────────────────────────────────────────────── */
+.pollWrap {
+  display:       flex;
+  flex-direction: column;
+  gap:           5px;
+  margin-bottom: 10px;
+}
+
+.pollOption {
+  position:   relative;
+  height:     30px;
+  background: rgba(255, 255, 255, 0.04);
+  border:     1px solid rgba(255, 255, 255, 0.07);
+  overflow:   hidden;
+}
+
+.pollBar {
+  position: absolute;
+  inset:    0 auto 0 0;
+  background: rgba(200, 255, 0, 0.14);
+  transition: width 0.5s ease;
+}
+
+.pollLabel {
+  position:        relative;
+  z-index:         1;
+  display:         flex;
+  align-items:     center;
+  justify-content: space-between;
+  height:          100%;
+  padding:         0 10px;
+  font-family:     'DM Sans', sans-serif;
+  font-size:       12px;
+  color:           #C4C3BE;
+}
+
+.pollPct {
+  font-family: 'JetBrains Mono', monospace;
+  font-size:   10px;
+  color:       #C8FF00;
+}
+
+.pollVotes {
+  font-family:    'JetBrains Mono', monospace;
+  font-size:      9px;
+  color:          #504F4B;
+  letter-spacing: 0.06em;
+  margin-top:     2px;
+}
+
+/* ── Build update callout ─────────────────────────────────────────────────── */
+.buildCallout {
+  display:     flex;
+  align-items: center;
+  gap:         8px;
+  border:      1px solid rgba(200, 255, 0, 0.2);
+  border-left: 3px solid #C8FF00;
+  background:  rgba(200, 255, 0, 0.04);
+  padding:     10px 14px;
+  margin-bottom: 10px;
+}
+
+.buildCalloutLabel {
+  font-family:    'JetBrains Mono', monospace;
+  font-size:      9px;
+  font-weight:    700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color:          #C8FF00;
+  white-space:    nowrap;
+}
+
+.buildCalloutCar {
+  font-family: 'DM Sans', sans-serif;
+  font-size:   13px;
+  color:       #F5F4F0;
+}
+
+/* ── Bottom action bar ────────────────────────────────────────────────────── */
+.actions {
+  display:     flex;
+  align-items: center;
+  gap:         8px;
+  margin-top:  12px;
+  padding-top: 10px;
+  border-top:  1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Vote buttons fill left side */
+.actions > div:first-child {
+  flex: 1;
+  max-width: 220px;
+}
+
+/* Right side: replies + share */
+.actionRight {
+  display:     flex;
+  align-items: center;
+  gap:         2px;
+  margin-left: auto;
+}
+
+.actionBtn {
+  display:     inline-flex;
+  align-items: center;
+  gap:         4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size:   10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color:       #504F4B;
+  background:  transparent;
+  border:      none;
+  padding:     4px 8px;
+  cursor:      pointer;
+  transition:  color 120ms ease;
+  text-decoration: none;
+}
+
+.actionBtn:hover { color: #898882; }

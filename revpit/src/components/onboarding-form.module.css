@@ -1,0 +1,316 @@
+/* ── Step transitions ────────────────────────────────────────────────────── */
+.stepForward {
+  animation: stepForward 0.24s ease forwards;
+}
+
+.stepBack {
+  animation: stepBack 0.24s ease forwards;
+}
+
+@keyframes stepForward {
+  from { opacity: 0; transform: translateX(28px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes stepBack {
+  from { opacity: 0; transform: translateX(-28px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ── Progress track ──────────────────────────────────────────────────────── */
+.progressTrack {
+  height: 2px;
+  background: #2A2928;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+
+.progressFill {
+  height: 100%;
+  background: #C8FF00;
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+/* ── Step nodes row ──────────────────────────────────────────────────────── */
+.stepsRow {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.stepConnector {
+  flex: 1;
+  height: 1px;
+  background: #2A2928;
+  transition: background 0.3s ease;
+}
+
+.stepConnectorDone {
+  background: #C8FF0066;
+}
+
+.stepNode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.stepCircle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid #2A2928;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: #504F4B;
+  background: transparent;
+  transition: border-color 0.25s, background 0.25s, color 0.25s;
+}
+
+.stepCircleActive {
+  border-color: #C8FF00;
+  background: #C8FF00;
+  color: #0E0D0C;
+}
+
+.stepCircleDone {
+  border-color: #C8FF0066;
+  background: rgba(200, 255, 0, 0.1);
+  color: #C8FF00;
+}
+
+.stepLabel {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #504F4B;
+  white-space: nowrap;
+  transition: color 0.25s;
+}
+
+.stepLabelActive { color: #C8FF00; }
+.stepLabelDone   { color: #C8FF0088; }
+
+/* ── Fields ──────────────────────────────────────────────────────────────── */
+.field {
+  margin-bottom: 20px;
+}
+
+.fieldRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.label {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #898882;
+  margin-bottom: 7px;
+}
+
+.labelOptional::after {
+  content: ' — optional';
+  font-weight: 400;
+  color: #504F4B;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  background: #0E0D0C;
+  border: 1px solid #504F4B;
+  border-radius: 3px;
+  color: #F5F4F0;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+
+.input {
+  height: 42px;
+  padding: 0 13px;
+}
+
+.textarea {
+  padding: 11px 13px;
+  resize: vertical;
+  min-height: 96px;
+  line-height: 1.55;
+}
+
+.input:focus,
+.textarea:focus {
+  border-color: #C8FF00;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: #504F4B;
+}
+
+.inputPrefix {
+  position: relative;
+}
+
+.inputPrefix .prefixGlyph {
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: #504F4B;
+  pointer-events: none;
+  user-select: none;
+}
+
+.inputPrefix .input {
+  padding-left: 26px;
+}
+
+.hint {
+  display: block;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  color: #504F4B;
+  margin-top: 5px;
+  line-height: 1.4;
+}
+
+.fieldError {
+  display: block;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  color: #FF6B6B;
+  margin-top: 5px;
+}
+
+/* ── Action error banner ─────────────────────────────────────────────────── */
+.errorBanner {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  color: #FF6B6B;
+  background: rgba(255, 107, 107, 0.08);
+  border: 1px solid rgba(255, 107, 107, 0.25);
+  border-radius: 3px;
+  padding: 10px 14px;
+  margin-bottom: 20px;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────────────── */
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.btnPrimary {
+  height: 42px;
+  padding: 0 28px;
+  background: #C8FF00;
+  color: #0E0D0C;
+  border: none;
+  border-radius: 3px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.15s;
+  white-space: nowrap;
+}
+
+.btnPrimary:hover:not(:disabled)  { opacity: 0.88; transform: translateY(-1px); }
+.btnPrimary:active                 { transform: translateY(0); }
+.btnPrimary:disabled               { opacity: 0.4; cursor: not-allowed; }
+
+.btnSecondary {
+  height: 42px;
+  padding: 0 20px;
+  background: transparent;
+  color: #898882;
+  border: 1px solid #2A2928;
+  border-radius: 3px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.btnSecondary:hover { color: #F5F4F0; border-color: #504F4B; }
+
+/* ── Skip link ───────────────────────────────────────────────────────────── */
+.skipLink {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: #504F4B;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s;
+}
+
+.skipLink:hover { color: #898882; }
+
+/* ── Social platform card ────────────────────────────────────────────────── */
+.platformCard {
+  border: 1px solid #2A2928;
+  border-radius: 3px;
+  padding: 16px;
+  margin-bottom: 16px;
+  background: #161514;
+}
+
+.platformHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.platformDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.comingSoon {
+  border: 1px dashed #2A2928;
+  border-radius: 3px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

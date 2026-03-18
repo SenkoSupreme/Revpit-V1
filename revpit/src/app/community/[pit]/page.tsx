@@ -257,7 +257,7 @@ export default async function PitPage({ params, searchParams }: PageProps) {
       </div>
 
       {/* Feed */}
-      <CommunityFeed initialDrops={drops} pitId={pit.id} />
+      <CommunityFeed initialDrops={drops} pitId={pit.id} isAuthenticated={!!userId} />
     </div>
     </PageTransition>
   );

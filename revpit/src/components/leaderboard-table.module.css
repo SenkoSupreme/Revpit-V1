@@ -20,7 +20,7 @@
   padding: 0 18px;
   background: transparent;
   border: 1px solid #2A2928;
-  border-radius: 3px;
+  clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);
   font-family: 'JetBrains Mono', monospace;
   font-size: 10px;
   font-weight: 700;
@@ -70,111 +70,99 @@
   padding: 0 14px 0 36px;
   background: #1E1D1B;
   border: 1px solid #2A2928;
-  border-radius: 3px;
   color: #F5F4F0;
   font-family: 'DM Sans', sans-serif;
   font-size: 13px;
   outline: none;
   transition: border-color 0.15s ease;
   box-sizing: border-box;
+  clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);
 }
 
 .searchInput::placeholder { color: #504F4B; }
 .searchInput:focus { border-color: #C8FF00; }
 
-/* ── Table shell ─────────────────────────────────────────────────────────── */
-.tableWrap {
-  width: 100%;
-  overflow-x: auto;
-  border: 1px solid #2A2928;
-  border-radius: 6px;
-  overflow: hidden;
+/* ── Card list ───────────────────────────────────────────────────────────── */
+.cardList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
-}
-
-/* ── Header ──────────────────────────────────────────────────────────────── */
-.thead th {
-  padding: 12px 20px;
-  text-align: left;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #504F4B;
-  border-bottom: 1px solid #2A2928;
-  background: #161514;
-}
-
-.thead th:first-child  { width: 80px; }
-.thead th:nth-child(2) { width: auto; }
-.thead th:nth-child(3) { width: 140px; text-align: right; }
-.thead th:nth-child(4) { width: 110px; text-align: center; }
-.thead th:last-child   { width: 110px; text-align: center; }
-
-/* ── Rows ────────────────────────────────────────────────────────────────── */
-.row {
-  border-bottom: 1px solid #1E1D1B;
-  transition: transform 0.15s ease, background-color 0.15s ease;
-  cursor: default;
-  border-left: 3px solid transparent;
-}
-
-.row:hover {
-  transform: translateX(4px);
-  background-color: #1E1D1B;
-}
-
-.row td {
-  padding: 14px 20px;
-  vertical-align: middle;
-}
-
-/* ── Rank #1 ─────────────────────────────────────────────────────────────── */
-.rowFirst {
-  border-left: 3px solid #C8FF00;
-  background-color: rgba(200, 255, 0, 0.03);
-}
-
-.rowFirst:hover {
-  background-color: rgba(200, 255, 0, 0.055);
-}
-
-/* ── Rank cell ───────────────────────────────────────────────────────────── */
-.rankCell {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 13px;
-  font-weight: 700;
-  color: #504F4B;
-}
-
-.rankFirst { color: #C8FF00; }
-
-.rankGold {
-  display: inline-flex;
-  align-items: center;
-  color: #C8FF00;
-  font-size: 15px;
-}
-
-/* ── Driver cell ─────────────────────────────────────────────────────────── */
-.userCell {
+/* ── Card row ────────────────────────────────────────────────────────────── */
+.card {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
+  padding: 14px 20px;
+  background: linear-gradient(135deg, #1A1918 0%, #131211 100%);
+  border: 1px solid rgba(255,255,255,0.05);
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+  cursor: default;
 }
 
+.card:hover {
+  border-color: rgba(200,255,0,0.15);
+  background: linear-gradient(135deg, #1E1D1B 0%, #161514 100%);
+  transform: translateX(3px);
+}
+
+.cardGold {
+  background: linear-gradient(135deg, #1A1408 0%, #0E0B05 100%);
+  border-color: rgba(212,165,0,0.3);
+  box-shadow: 0 0 12px rgba(212,165,0,0.06);
+}
+
+.cardGold:hover {
+  border-color: rgba(212,165,0,0.5);
+  background: linear-gradient(135deg, #201A09 0%, #121009 100%);
+}
+
+.cardAccent {
+  background: linear-gradient(135deg, #111508 0%, #0C0E05 100%);
+  border-color: rgba(200,255,0,0.2);
+  box-shadow: 0 0 12px rgba(200,255,0,0.04);
+}
+
+.cardAccent:hover {
+  border-color: rgba(200,255,0,0.35);
+}
+
+/* ── Rank block ──────────────────────────────────────────────────────────── */
+.rankBlock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  flex-shrink: 0;
+}
+
+.rankNum {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  letter-spacing: 0.04em;
+  color: #3A3937;
+  line-height: 1;
+}
+
+.rankNumGold {
+  color: #D4A500;
+  text-shadow: 0 0 12px rgba(212,165,0,0.35);
+}
+
+.rankNumAccent {
+  color: #C8FF00;
+  text-shadow: 0 0 12px rgba(200,255,0,0.35);
+}
+
+/* ── Avatar ──────────────────────────────────────────────────────────────── */
 .avatar {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   background: #2A2928;
-  border: 1.5px solid #504F4B;
+  border: 1.5px solid #3A3937;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -186,9 +174,22 @@
 }
 
 .avatarFirst {
+  border-color: #D4A500;
+  color: #D4A500;
+  background: rgba(212,165,0,0.08);
+  box-shadow: 0 0 0 2px #0E0D0C, 0 0 0 3px #D4A500;
+}
+
+.avatarAccent {
   border-color: #C8FF00;
   color: #C8FF00;
   background: rgba(200,255,0,0.08);
+}
+
+/* ── Driver info ─────────────────────────────────────────────────────────── */
+.driverInfo {
+  flex: 1;
+  min-width: 0;
 }
 
 .username {
@@ -203,6 +204,14 @@
   margin-bottom: 2px;
 }
 
+.handle {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: #504F4B;
+  letter-spacing: 0.06em;
+  display: block;
+}
+
 .carSub {
   font-family: 'JetBrains Mono', monospace;
   font-size: 9px;
@@ -211,45 +220,57 @@
   display: block;
 }
 
-/* kept for compat */
-.handle {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  color: #504F4B;
-  letter-spacing: 0.04em;
-  display: block;
+/* ── Score ───────────────────────────────────────────────────────────────── */
+.scoreBlock {
+  text-align: right;
+  flex-shrink: 0;
+  min-width: 100px;
 }
 
-/* ── Score cell ──────────────────────────────────────────────────────────── */
-.scoreCell {
-  text-align: right;
+.scoreVal {
   font-family: 'JetBrains Mono', monospace;
   font-size: 18px;
   font-weight: 700;
   color: #F5F4F0;
   letter-spacing: -0.01em;
+  line-height: 1;
+  display: block;
 }
 
-.scoreFirst { color: #C8FF00; }
+.scoreValGold  { color: #D4A500; text-shadow: 0 0 10px rgba(212,165,0,0.3); }
+.scoreValAccent{ color: #C8FF00; text-shadow: 0 0 10px rgba(200,255,0,0.3); }
 
-/* ── Tier cell ───────────────────────────────────────────────────────────── */
-.tierCell { text-align: center; }
+.scorePts {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  color: #504F4B;
+  margin-top: 2px;
+  display: block;
+}
 
+/* ── Tier badge ──────────────────────────────────────────────────────────── */
 .tierBadge {
   display: inline-block;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 700;
   letter-spacing: 0.1em;
-  border-radius: 3px;
   padding: 3px 8px;
   text-transform: uppercase;
   border: 1px solid transparent;
   white-space: nowrap;
+  clip-path: polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 0 100%);
+  flex-shrink: 0;
 }
 
 /* ── Trend cell ──────────────────────────────────────────────────────────── */
-.trendCell { text-align: center; }
+.trendWrap {
+  flex-shrink: 0;
+  min-width: 60px;
+  display: flex;
+  justify-content: flex-end;
+}
 
 .trendUp,
 .trendDown,
@@ -269,31 +290,62 @@
 .trendStable { color: #C8FF00; }
 .trendNeutral{ color: #504F4B; }
 
-/* ── Footer ──────────────────────────────────────────────────────────────── */
+/* ── Champion label ──────────────────────────────────────────────────────── */
+.championLabel {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: #0A0908;
+  background: #D4A500;
+  padding: 2px 8px;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+/* ── Footer count ────────────────────────────────────────────────────────── */
 .tableFooter {
-  padding: 12px 20px;
+  padding: 14px 20px;
   font-family: 'JetBrains Mono', monospace;
   font-size: 9px;
   letter-spacing: 0.1em;
   color: #504F4B;
   border-top: 1px solid #1E1D1B;
-}
-
-/* ── Car cell (compat) ───────────────────────────────────────────────────── */
-.carCell {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  color: #898882;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  margin-top: 8px;
 }
 
 /* ── Empty ───────────────────────────────────────────────────────────────── */
 .empty {
-  padding: 48px 0;
+  padding: 48px 24px;
   text-align: center;
   font-family: 'DM Sans', sans-serif;
   font-size: 14px;
   color: #504F4B;
+  border: 1px dashed #2A2928;
+  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
+}
+
+/* ── Column labels (section header above cards) ───────────────────────────── */
+.colHeaders {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 20px 10px;
+  border-bottom: 1px solid #1E1D1B;
+  margin-bottom: 12px;
+}
+
+.colHeaderRank   { width: 52px; flex-shrink: 0; }
+.colHeaderAvatar { width: 38px; flex-shrink: 0; }
+.colHeaderDriver { flex: 1; }
+.colHeaderScore  { min-width: 100px; text-align: right; flex-shrink: 0; }
+.colHeaderTier   { flex-shrink: 0; min-width: 72px; }
+.colHeaderTrend  { min-width: 60px; text-align: right; flex-shrink: 0; }
+
+.colLabel {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #3A3937;
+  text-transform: uppercase;
 }

@@ -36,17 +36,22 @@ type NavItem = {
 
 // ─── Nav config ───────────────────────────────────────────────────────────────
 
-const MAIN_NAV: NavItem[] = [
-  { label: 'Dashboard',   href: '/dashboard',   icon: LayoutDashboard },
-  { label: 'My Profile',  href: '/profile',     icon: User            },
-  { label: 'Leaderboard', href: '/leaderboard', icon: Trophy          },
-  { label: 'Clubs',       href: '/clubs',       icon: Users           },
-  { label: 'Community',   href: '/community',   icon: MessageSquare   },
-  { label: 'Quests',      href: '/quests',      icon: Zap             },
-  { label: 'Challenges',  href: '/challenges',  icon: Flag            },
+/** Always visible — no auth required */
+const PUBLIC_NAV: NavItem[] = [
+  { label: 'Leaderboard', href: '/leaderboard', icon: Trophy        },
+  { label: 'Clubs',       href: '/clubs',       icon: Users         },
+  { label: 'Community',   href: '/community',   icon: MessageSquare },
 ];
 
-const BOTTOM_NAV: NavItem[] = [
+/** Visible only when signed in */
+const AUTH_NAV: NavItem[] = [
+  { label: 'Dashboard',  href: '/dashboard',  icon: LayoutDashboard },
+  { label: 'My Profile', href: '/profile',    icon: User            },
+  { label: 'Quests',     href: '/quests',     icon: Zap             },
+  { label: 'Challenges', href: '/challenges', icon: Flag            },
+];
+
+const SETTINGS_NAV: NavItem[] = [
   { label: 'Settings', href: '/settings', icon: Settings },
 ];
 
@@ -107,9 +112,13 @@ export function SidebarClient({ profile }: { profile: SidebarProfile }) {
   );
 
   // ── Nav section ──────────────────────────────────────────────────────────────
+  const allMainNav = profile
+    ? [...AUTH_NAV, ...PUBLIC_NAV]
+    : PUBLIC_NAV;
+
   const navSection = (
     <nav style={{ flex: 1, padding: '8px 0', overflowY: 'auto' }} aria-label="Main navigation">
-      {MAIN_NAV.map(({ label, href, icon: Icon }, idx) => {
+      {allMainNav.map(({ label, href, icon: Icon }, idx) => {
         const active = isActive(href);
         return (
           <Link
@@ -125,22 +134,25 @@ export function SidebarClient({ profile }: { profile: SidebarProfile }) {
         );
       })}
 
-      <div className={styles.navDivider} />
-
-      {BOTTOM_NAV.map(({ label, href, icon: Icon }) => {
-        const active = isActive(href);
-        return (
-          <Link
-            key={href}
-            href={href}
-            className={active ? styles.navItemActive : styles.navItem}
-            aria-current={active ? 'page' : undefined}
-          >
-            <Icon size={15} strokeWidth={1.75} aria-hidden="true" />
-            {label}
-          </Link>
-        );
-      })}
+      {profile && (
+        <>
+          <div className={styles.navDivider} />
+          {SETTINGS_NAV.map(({ label, href, icon: Icon }) => {
+            const active = isActive(href);
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={active ? styles.navItemActive : styles.navItem}
+                aria-current={active ? 'page' : undefined}
+              >
+                <Icon size={15} strokeWidth={1.75} aria-hidden="true" />
+                {label}
+              </Link>
+            );
+          })}
+        </>
+      )}
     </nav>
   );
 

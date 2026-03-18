@@ -180,10 +180,11 @@ export function NewDropsBanner({ count, dismiss }: NewDropsBannerProps) {
 // ─── DropCard ─────────────────────────────────────────────────────────────────
 
 interface Props {
-  drop: Drop;
+  drop:             Drop;
+  isAuthenticated?: boolean;
 }
 
-export function DropCard({ drop }: Props) {
+export function DropCard({ drop, isAuthenticated = false }: Props) {
   const {
     id, title, body, type, media_urls, poll_options,
     tag, rev_count, idle_count, reply_count, is_pinned,
@@ -275,6 +276,7 @@ export function DropCard({ drop }: Props) {
             initialRevCount={rev_count}
             initialIdleCount={idle_count}
             initialUserVote={user_vote ?? null}
+            isAuthenticated={isAuthenticated}
           />
 
           <div className={styles.actionRight}>

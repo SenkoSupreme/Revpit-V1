@@ -21,6 +21,7 @@ interface Props {
   initialRevCount:  number;
   initialIdleCount: number;
   initialUserVote:  VoteType | null;
+  isAuthenticated?: boolean;
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -30,6 +31,7 @@ export function VoteButtons({
   initialRevCount,
   initialIdleCount,
   initialUserVote,
+  isAuthenticated = false,
 }: Props) {
   const [isPending, startTransition] = useTransition();
 
@@ -59,6 +61,10 @@ export function VoteButtons({
   );
 
   function handleVote(vote: VoteType) {
+    if (!isAuthenticated) {
+      window.location.href = '/sign-in';
+      return;
+    }
     startTransition(async () => {
       setOptimistic(vote);
       await voteOnDrop(dropId, vote);
@@ -82,7 +88,7 @@ export function VoteButtons({
     padding:        '0 10px',
     borderRadius:   '0px',
     cursor:         isPending ? 'not-allowed' : 'pointer',
-    opacity:        isPending ? 0.5 : 1,
+    opacity:        isPending ? 0.5 : isAuthenticated ? 1 : 0.55,
     transition:     'background 120ms ease, color 120ms ease, border-color 120ms ease',
     fontFamily:     tokens.fonts.mono,
     fontSize:       '10px',

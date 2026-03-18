@@ -6,11 +6,12 @@ import { DropCard, NewDropsBanner } from '@/components/community/drop-card';
 import type { Drop } from '@/lib/types/community';
 
 interface Props {
-  initialDrops: Drop[];
-  pitId?:       string;
+  initialDrops:    Drop[];
+  pitId?:          string;
+  isAuthenticated?: boolean;
 }
 
-export function CommunityFeed({ initialDrops, pitId }: Props) {
+export function CommunityFeed({ initialDrops, pitId, isAuthenticated = false }: Props) {
   const [displayDrops, setDisplayDrops] = useState<Drop[]>(initialDrops);
   const [addedCount,   setAddedCount]   = useState(0);
 
@@ -49,7 +50,7 @@ export function CommunityFeed({ initialDrops, pitId }: Props) {
         </p>
       ) : (
         displayDrops.map((drop) => (
-          <DropCard key={drop.id} drop={drop} />
+          <DropCard key={drop.id} drop={drop} isAuthenticated={isAuthenticated} />
         ))
       )}
     </div>

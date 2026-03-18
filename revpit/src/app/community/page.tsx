@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { auth } from '@clerk/nextjs/server';
 import { getDrops, getPits } from '@/lib/actions/community';
 import { CommunityFeed } from '@/components/community/community-feed';
 import { tokens } from '@/lib/design-tokens';
@@ -22,6 +23,9 @@ interface PageProps {
 export default async function CommunityPage({ searchParams }: PageProps) {
   const { sort: rawSort } = await searchParams;
   const sort: FeedSort = (rawSort as FeedSort) ?? 'hot';
+
+  const { userId } = await auth();
+  const isAuthenticated = !!userId;
 
   const [drops, pits] = await Promise.all([
     getDrops({ sort }),
@@ -98,13 +102,23 @@ export default async function CommunityPage({ searchParams }: PageProps) {
             </h1>
           </div>
 
-          <Link
-            href="/community/general/submit"
-            className="cyber-btn"
-            style={{ height: 40, padding: '0 20px', fontSize: 10, flexShrink: 0, position: 'relative', zIndex: 2 }}
-          >
-            + NEW DROP
-          </Link>
+          {isAuthenticated ? (
+            <Link
+              href="/community/general/submit"
+              className="cyber-btn"
+              style={{ height: 40, padding: '0 20px', fontSize: 10, flexShrink: 0, position: 'relative', zIndex: 2 }}
+            >
+              + NEW DROP
+            </Link>
+          ) : (
+            <Link
+              href="/sign-in"
+              className="cyber-btn-ghost"
+              style={{ height: 40, padding: '0 20px', fontSize: 10, flexShrink: 0, position: 'relative', zIndex: 2 }}
+            >
+              SIGN IN TO POST
+            </Link>
+          )}
         </div>
 
         {/* Sort tabs */}
@@ -159,7 +173,7 @@ export default async function CommunityPage({ searchParams }: PageProps) {
 
         {/* Realtime feed */}
         <div style={{ padding: '0' }}>
-          <CommunityFeed initialDrops={drops} />
+          <CommunityFeed initialDrops={drops} isAuthenticated={isAuthenticated} />
         </div>
       </div>
 

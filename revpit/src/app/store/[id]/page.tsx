@@ -5,6 +5,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { tokens } from '@/lib/design-tokens';
 import { PageTransition } from '@/components/layout/page-transition';
 import { ListingActions } from './listing-actions';
+import { GuestDetailActions } from './guest-detail-actions';
 import type { StoreListing } from '../page';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
@@ -62,6 +63,7 @@ export default async function ListingDetailPage({
     isMember = profile?.is_subscribed === true || clubRow !== null;
   }
 
+  const isGuest     = !userId;
   const isLocked    = listing.is_exclusive && !isMember;
   const isOwner     = listing.seller_id === userId;
   const images      = listing.images ?? [];
@@ -135,7 +137,7 @@ export default async function ListingDetailPage({
                     marginBottom: 10,
                   }}
                 >
-                  {isLocked ? (
+                  {isGuest || isLocked ? (
                     <div
                       style={{
                         position:       'absolute',
@@ -155,7 +157,7 @@ export default async function ListingDetailPage({
                         <circle cx="14" cy="19" r="2" fill={grey[500]} />
                       </svg>
                       <span style={{ fontFamily: mono, fontSize: 10, letterSpacing: '0.14em', color: grey[500] }}>
-                        MEMBERS ONLY
+                        {isGuest ? 'SIGN IN TO VIEW' : 'MEMBERS ONLY'}
                       </span>
                     </div>
                   ) : (
@@ -169,7 +171,7 @@ export default async function ListingDetailPage({
                 </div>
 
                 {/* Thumbnails */}
-                {images.length > 1 && !isLocked && (
+                {images.length > 1 && !isLocked && !isGuest && (
                   <div style={{ display: 'flex', gap: 8 }}>
                     {images.slice(1).map((url, i) => (
                       /* eslint-disable-next-line @next/next/no-img-element */
@@ -286,7 +288,11 @@ export default async function ListingDetailPage({
 
               {/* Price */}
               <div style={{ marginBottom: 20 }}>
-                {isLocked ? (
+                {isGuest ? (
+                  <span style={{ fontFamily: mono, fontSize: 14, color: grey[700], letterSpacing: '0.1em' }}>
+                    — SIGN IN TO SEE PRICE —
+                  </span>
+                ) : isLocked ? (
                   <span style={{ fontFamily: mono, fontSize: 14, color: grey[700], letterSpacing: '0.1em' }}>
                     — MEMBERS ONLY —
                   </span>
@@ -346,8 +352,8 @@ export default async function ListingDetailPage({
                 </div>
               </div>
 
-              {/* Description */}
-              {listing.description && !isLocked && (
+              {/* Description — hidden for guests */}
+              {listing.description && !isLocked && !isGuest && (
                 <div style={{ marginBottom: 24 }}>
                   <p style={{ fontFamily: mono, fontSize: 9, letterSpacing: '0.12em', color: grey[700], marginBottom: 8, textTransform: 'uppercase' }}>
                     Description
@@ -359,7 +365,11 @@ export default async function ListingDetailPage({
               )}
 
               {/* CTA / Actions */}
-              <ListingActions listing={listing as StoreListing} isOwner={isOwner} isLocked={isLocked} isSold={listing.is_sold} />
+              {isGuest ? (
+                <GuestDetailActions />
+              ) : (
+                <ListingActions listing={listing as StoreListing} isOwner={isOwner} isLocked={isLocked} isSold={listing.is_sold} />
+              )}
             </div>
           </div>
         </div>

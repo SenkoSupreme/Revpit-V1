@@ -1,19 +1,10 @@
-import Link from 'next/link';
-import { headers } from 'next/headers';
 import AppSidebar from '@/components/app-sidebar';
 import { requireModerator } from '@/lib/roles';
 import { tokens } from '@/lib/design-tokens';
+import { AdminTabs } from './admin-tabs';
 import styles from './admin.module.css';
 
 export const metadata = { title: 'Admin Panel — REVPIT' };
-
-const TABS = [
-  { label: 'Overview',  href: '/admin' },
-  { label: 'Store',     href: '/admin/store' },
-  { label: 'Community', href: '/admin/community' },
-  { label: 'Users',     href: '/admin/users' },
-  { label: 'Action Log', href: '/admin/logs' },
-] as const;
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   // Gate: redirects to 404 if not moderator or admin
@@ -21,10 +12,6 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   const { black, white, grey, accent } = tokens.colors;
   const { display, mono }              = tokens.fonts;
-
-  // Detect current path for active tab
-  const headersList = await headers();
-  const pathname    = headersList.get('x-pathname') ?? '';
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: black }}>
@@ -87,23 +74,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             </h1>
           </div>
 
-          {/* Sub-nav tabs */}
-          <nav className={styles.tabs} aria-label="Admin sections" style={{ padding: 0 }}>
-            {TABS.map(({ label, href }) => {
-              const isActive = href === '/admin'
-                ? pathname === '/admin' || pathname === '/admin/'
-                : pathname.startsWith(href);
-              return (
-                <Link
-                  key={href}
-                  href={href}
-                  className={`${styles.tab} ${isActive ? styles.tabActive : ''}`}
-                >
-                  {label}
-                </Link>
-              );
-            })}
-          </nav>
+          {/* Sub-nav tabs — client component so usePathname() works on navigation */}
+          <AdminTabs />
         </div>
 
         {/* ── Page content ──────────────────────────────────────────────── */}

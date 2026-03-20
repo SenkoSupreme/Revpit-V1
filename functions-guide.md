@@ -1,7 +1,7 @@
 # REVPIT Platform — Function Reference Guide
 
 > **Location of source code:** `c:\Users\SEN VON DOOM\OneDrive\Desktop\RVP_Proj\Revpit-V1\revpit\src`
-> **Last updated:** 2026-03-20 (Admin action log: migration 008, logAction helper in all mod actions, /admin/logs page with actor summary + filters, mod role-change protection hardened, Logs tab added to admin layout; Admin panel + role system: migration 007, roles.ts, /admin dashboard + store/community/users moderation, AppSidebar role-aware nav; Pit Market store: store_listings + club_members migration, StoreListingCard component, /store browse+filter page, /store/new create listing form with Supabase Storage image upload, /store/[id] detail + owner actions, store/actions.ts server actions)
+> **Last updated:** 2026-03-20 (Sidebar: logo updated to side_nav_logo.png, guest logo link now routes to / instead of /dashboard; Store made public — AuthGateModal popup for guests, StoreHeroCTA + GuestDetailActions client components, /store(.*) added to middleware public routes; Landing page store section + navbar/footer links added; AdminTabs client component for correct active-tab highlighting on navigation; Admin action log: migration 008, logAction helper in all mod actions, /admin/logs page with actor summary + filters, mod role-change protection hardened, Logs tab added to admin layout; Admin panel + role system: migration 007, roles.ts, /admin dashboard + store/community/users moderation, AppSidebar role-aware nav; Pit Market store: store_listings + club_members migration, StoreListingCard component, /store browse+filter page, /store/new create listing form with Supabase Storage image upload, /store/[id] detail + owner actions, store/actions.ts server actions)
 > **Rule:** This file must be updated whenever a new function, hook, server action, or component is added to the codebase.
 
 ---
@@ -779,6 +779,7 @@ All routes not listed in `isPublicRoute` require authentication via Clerk's `aut
 - `/leaderboard(.*)` — Public leaderboard
 - `/clubs(.*)` — Public clubs directory
 - `/community(.*)` — Public community feed
+- `/store(.*)` — Pit Market browse + detail pages (publicly viewable; auth gated at UI level for price/images/actions)
 
 ### Pathname Header Proxy
 Injects the current request pathname into a **request header** (`x-pathname`) so server components can read it without client-side JavaScript.
@@ -1087,10 +1088,14 @@ Interactive sidebar shell. Handles active nav state via `usePathname`, mobile ha
 // SidebarProfile = { username: string; score: number; global_rank: number | null } | null
 ```
 
+**Logo:**
+- Image: `/images/side_nav_logo.png`
+- Link href: `/dashboard` when signed in, `/` (landing page) when guest (`profile` is null)
+
 **Nav arrays (auth-gated):**
 ```ts
 // Always visible — no sign-in required
-PUBLIC_NAV  = [Leaderboard, Clubs, Community]
+PUBLIC_NAV  = [Leaderboard, Clubs, Community, Pit Market]
 
 // Shown only when profile (user) is non-null
 AUTH_NAV    = [Dashboard, My Profile, Quests, Challenges]
@@ -1105,7 +1110,7 @@ const allMainNav = profile ? [...AUTH_NAV, ...PUBLIC_NAV] : PUBLIC_NAV;
 // Settings rendered in a separate block below main nav, only when profile is not null
 ```
 
-Unauthenticated visitors see only the three public nav items. Authenticated users see Dashboard, Profile, Quests, Challenges first, then the public items, then Settings below a divider.
+Unauthenticated visitors see only the public nav items and the logo routes to `/`. Authenticated users see Dashboard, Profile, Quests, Challenges first, then the public items, then Settings below a divider, and the logo routes to `/dashboard`.
 
 ---
 
@@ -1404,9 +1409,11 @@ Permanently deletes a listing. Only the seller can call this.
 **File:** `src/app/store/page.tsx`
 **Type:** Async Server Component
 
-Browse page at `/store`. Reads `searchParams` for filtering (`q`, `category`, `condition`, `exclusive`). Checks if current user is a member (subscribed or in any club) to determine `isMember`. Queries `store_listings` with `status = 'approved'`. Renders `<StoreListingCard>` grid.
+Publicly accessible browse page at `/store`. Reads `searchParams` for filtering (`q`, `category`, `condition`, `exclusive`). Calls `auth()` optionally — no redirect for guests. Checks if current user is a member (subscribed or in any club) to determine `isMember`. Queries `store_listings` with `status = 'approved'`. Renders `<StoreListingCard>` grid for all visitors; guest card clicks open `AuthGateModal` instead of navigating to the detail page. Renders `<StoreHeroCTA>` which gates "LIST AN ITEM" behind the modal for guests.
 
 **Route:** `/store?q=&category=merch|car_parts&condition=new|like_new|used&exclusive=1`
+
+**Guest behaviour:** All listings are visible. Clicking a card opens `AuthGateModal`. The "LIST AN ITEM" button also opens the modal instead of navigating to `/store/new`.
 
 ---
 
@@ -1430,7 +1437,28 @@ Form for creating a new listing. Uses `useActionState(createListing, ...)`. Incl
 **File:** `src/app/store/[id]/page.tsx`
 **Type:** Async Server Component
 
-Detail page at `/store/[id]`. Returns 404 if listing not found or if listing is not approved and the viewer is not the seller. Checks membership for exclusive listing gate. Renders image gallery, price, badges, description, and `<ListingActions>`.
+Publicly accessible detail page at `/store/[id]`. Returns 404 if listing not found or if not approved and the viewer is not the seller. Calls `auth()` optionally — no redirect for guests.
+
+**Access flags computed server-side:**
+- `isGuest` — `!userId`
+- `isLocked` — `listing.is_exclusive && !isMember`
+- `isOwner` — `listing.seller_id === userId`
+
+**Guest gating (isGuest):**
+- Image area shows blurred lock overlay labelled "SIGN IN TO VIEW"
+- Thumbnails hidden
+- Price replaced with "— SIGN IN TO SEE PRICE —"
+- Description hidden
+- Actions panel replaced with `<GuestDetailActions>` (shows JOIN NOW / SIGN IN modal triggers)
+
+**Member lock gating (isLocked):**
+- Image area shows lock overlay labelled "MEMBERS ONLY"
+- Thumbnails hidden
+- Price replaced with "— MEMBERS ONLY —"
+- Description hidden
+- `<ListingActions>` renders the locked state UI
+
+**Authenticated non-locked:** Full image gallery, price, description, and `<ListingActions>` (CONTACT SELLER / MARK AS SOLD / DELETE for owner).
 
 ---
 
@@ -1453,15 +1481,26 @@ Renders the CTA section on the listing detail page. Shows a payment placeholder 
 
 ### `StoreListingCard`
 **File:** `src/components/store-listing-card.tsx`
-**Type:** Server-safe React Component
+**Type:** Client Component (`'use client'`)
 
-Card for a single listing shown in the browse grid. Renders image (or initial placeholder), category/condition badges, price, seller username, sold overlay, and lock overlay for exclusive listings when `isMember = false`.
+Card for a single listing shown in the browse grid. Converted to a client component to support auth-gate click interception for guests.
 
-| Prop | Type |
-|---|---|
-| `listing` | `StoreListing` |
-| `isMember` | `boolean` |
-| `currentUserId` | `string \| null` |
+**Guest behaviour (`currentUserId === null`):**
+- `handleClick` calls `e.preventDefault()` on the `<Link>` and opens `AuthGateModal`
+- Image area shows "SIGN IN TO VIEW" lock overlay
+- Footer shows "JOIN TO VIEW →" instead of the price
+
+**Member lock behaviour (`isLocked`):**
+- Image area shows "MEMBERS ONLY" lock overlay
+- Footer shows "— LOCKED —" instead of the price
+
+**Authenticated behaviour:** Full card navigation to `/store/[id]`, price shown, sold overlay rendered if `is_sold`.
+
+| Prop | Type | Notes |
+|---|---|---|
+| `listing` | `StoreListing` | Listing data |
+| `isMember` | `boolean` | Whether the viewer holds member/subscriber status |
+| `currentUserId` | `string \| null` | Clerk userId; `null` for unauthenticated visitors |
 
 ---
 
@@ -1597,6 +1636,68 @@ Supports `?actor=username` and `?action=ACTION_KEY` query filters. Shows a **top
 
 ### Moderator role-change protection
 All role-altering actions (`setUserRole`, `grantRoleByEmail`) call `assertAdmin()` which throws with message "Admin access required. Moderators cannot alter roles." on any non-admin attempt. This is enforced at the server action level regardless of what the UI shows.
+
+---
+
+### `AuthGateModal`
+**File:** `src/components/auth-gate-modal.tsx`
+**Type:** Client Component (`'use client'`)
+
+Portal-based modal overlay displayed when unauthenticated users attempt to access gated store content. Locks body scroll and closes on Escape or backdrop click.
+
+**Props:** `isOpen: boolean`, `onClose: () => void`
+**Renders:** Lock icon, "JOIN TO VIEW FULL DETAILS" heading, 4 perks list, JOIN NOW (→ `/sign-up`) and SIGN IN (→ `/sign-in`) CTA buttons.
+**Usage:** Used by `StoreListingCard`, `StoreHeroCTA`, and `GuestDetailActions`.
+
+---
+
+### `StoreHeroCTA`
+**File:** `src/app/store/store-hero-cta.tsx`
+**Type:** Client Component (`'use client'`)
+
+Renders the "LIST AN ITEM" button in the store hero. If `userId` is null (guest), clicking the button opens `AuthGateModal` instead of navigating. Also renders the members-only filter chip if `isMember` is true.
+
+**Props:** `userId: string | null`, `isMember: boolean`, `exclusiveOnly: boolean`
+
+---
+
+### `GuestDetailActions`
+**File:** `src/app/store/[id]/guest-detail-actions.tsx`
+**Type:** Client Component (`'use client'`)
+
+Replaces `ListingActions` on the detail page when the user is not authenticated. Shows a sign-up/sign-in panel that opens `AuthGateModal` on click.
+
+**Props:** none
+**Usage:** Rendered by `src/app/store/[id]/page.tsx` when `isGuest` is true.
+
+---
+
+### Store public access (middleware)
+`/store(.*)` added to `isPublicRoute` in `src/middleware.ts`. The store listing grid and individual listing pages are now publicly accessible. Authentication is enforced at the UI level: card clicks open `AuthGateModal`, and detail pages gate price/description/images/actions for guests.
+
+---
+
+### `AdminTabs`
+**File:** `src/app/admin/admin-tabs.tsx`
+**Type:** Client Component (`'use client'`)
+
+Sub-navigation tab bar for the admin panel. Uses `usePathname()` from `next/navigation` to determine the active tab on every client-side navigation. Replaces the previous server-component approach (reading `x-pathname` header) which only ran on initial page load and kept Overview permanently highlighted on subsequent navigations.
+
+**Props:** none
+**Tabs rendered:** Overview, Store, Community, Users, Action Log
+**Usage:** Rendered inside `src/app/admin/layout.tsx`.
+
+---
+
+### `StoreSection` (landing page)
+**File:** `src/app/page.tsx`
+**Type:** Server Component function
+
+PIT MARKET showcase section on the public landing page. Displays three sample store item cards (merch + car parts), category/exclusive-drop feature tags, Stripe/PayPal placeholder badges, and two CTAs: **START SELLING** (→ `/sign-up`) and **BROWSE STORE** (→ `/store`). No DB queries — purely marketing content.
+
+Also updated in the same file:
+- Navbar nav links now include **STORE**
+- Footer Platform links now include **Store**
 
 ---
 

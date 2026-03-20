@@ -158,7 +158,7 @@ function Navbar() {
 
       {/* Nav links */}
       <div className="rp-nav-links" style={{ display: 'flex', alignItems: 'center', gap: 36 }}>
-        {(['LEADERBOARD', 'CLUBS', 'CHALLENGES', 'QUESTS'] as const).map((item) => (
+        {(['LEADERBOARD', 'CLUBS', 'CHALLENGES', 'QUESTS', 'STORE'] as const).map((item) => (
           <Link
             key={item}
             href={`/${item.toLowerCase()}`}
@@ -1034,6 +1034,245 @@ function CommunitySection() {
   );
 }
 
+// ─── Store section ─────────────────────────────────────────────────────────────
+
+const STORE_ITEMS = [
+  {
+    category: 'MERCH',
+    title:    'REVPIT Drop Hoodie',
+    price:    '£64',
+    badge:    'NEW DROP',
+    color:    accent,
+    img:      null,
+  },
+  {
+    category: 'CAR PARTS',
+    title:    'Track-spec Brake Kit — 330mm',
+    price:    '£220',
+    badge:    'EXCLUSIVE',
+    color:    '#C8FF00',
+    img:      null,
+  },
+  {
+    category: 'MERCH',
+    title:    'Pit Crew Cap — Season 05',
+    price:    '£28',
+    badge:    null,
+    color:    null,
+    img:      null,
+  },
+];
+
+function StoreSection() {
+  return (
+    <section
+      style={{
+        padding:         '100px 40px',
+        position:        'relative',
+        backgroundColor: '#0E0D0C',
+        overflow:        'hidden',
+      }}
+    >
+      {/* Ambient glow */}
+      <div
+        aria-hidden="true"
+        style={{
+          position:      'absolute',
+          top:           -80,
+          left:          -80,
+          width:         500,
+          height:        500,
+          background:    'radial-gradient(ellipse, rgba(200,255,0,0.05) 0%, transparent 65%)',
+          pointerEvents: 'none',
+        }}
+      />
+
+      {/* Top divider */}
+      <div
+        aria-hidden="true"
+        style={{
+          position:   'absolute',
+          top:        0,
+          left:       0,
+          right:      0,
+          height:     1,
+          background: 'linear-gradient(90deg, transparent, rgba(200,255,0,0.3), transparent)',
+        }}
+      />
+
+      <div style={{ maxWidth: 1140, margin: '0 auto' }}>
+
+        {/* Header row */}
+        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 24, marginBottom: 60, flexWrap: 'wrap' }}>
+          <div>
+            <p style={{ fontFamily: mono, fontSize: 8, letterSpacing: '0.24em', color: accent, marginBottom: 10 }}>
+              PIT MARKET
+            </p>
+            <h2
+              style={{
+                fontFamily:    display,
+                fontSize:      'clamp(40px, 5vw, 64px)',
+                letterSpacing: '0.04em',
+                color:         white,
+                lineHeight:    0.9,
+                margin:        0,
+              }}
+            >
+              BUY &amp; SELL
+              <br />
+              <span style={{ color: accent }}>LIKE A PRO</span>
+            </h2>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'flex-end' }}>
+            <div style={{ display: 'flex', gap: 8 }}>
+              {['MERCH', 'CAR PARTS', 'EXCLUSIVE DROPS'].map((tag) => (
+                <span
+                  key={tag}
+                  style={{
+                    fontFamily:    mono,
+                    fontSize:      8,
+                    letterSpacing: '0.14em',
+                    color:         grey[700],
+                    border:        `1px solid rgba(255,255,255,0.07)`,
+                    padding:       '4px 10px',
+                    clipPath:      'polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 0 100%)',
+                  }}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+            <p style={{ fontFamily: body, fontSize: 13, color: grey[700], textAlign: 'right', maxWidth: 280, lineHeight: 1.5 }}>
+              Buy and sell race-ready gear directly with the community.
+              Members get access to exclusive drops.
+            </p>
+          </div>
+        </div>
+
+        {/* Sample cards */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 48 }} className="rp-features-grid">
+          {STORE_ITEMS.map((item, idx) => (
+            <div
+              key={item.title}
+              className="cyber-card"
+              style={{
+                padding:   0,
+                overflow:  'hidden',
+                animation: `rp-slide-up 500ms ease-out ${idx * 80}ms both`,
+              }}
+            >
+              {/* Image placeholder */}
+              <div
+                style={{
+                  height:          160,
+                  background:      'linear-gradient(135deg, #1C1B19 0%, #141312 100%)',
+                  display:         'flex',
+                  alignItems:      'center',
+                  justifyContent:  'center',
+                  borderBottom:    `1px solid rgba(200,255,0,0.06)`,
+                  position:        'relative',
+                  overflow:        'hidden',
+                }}
+              >
+                {/* Grid texture */}
+                <div className="cyber-grid-bg" aria-hidden="true"
+                  style={{ position: 'absolute', inset: 0, opacity: 0.4, pointerEvents: 'none' }} />
+
+                {/* Bag icon */}
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" aria-hidden="true" style={{ opacity: 0.18 }}>
+                  <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke={accent} strokeWidth="1.5" strokeLinejoin="round" />
+                  <line x1="3" y1="6" x2="21" y2="6" stroke={accent} strokeWidth="1.5" />
+                  <path d="M16 10a4 4 0 01-8 0" stroke={accent} strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+
+                {/* Badge */}
+                {item.badge && (
+                  <span
+                    style={{
+                      position:      'absolute',
+                      top:           12,
+                      left:          12,
+                      fontFamily:    mono,
+                      fontSize:      7,
+                      fontWeight:    700,
+                      letterSpacing: '0.12em',
+                      color:         black,
+                      background:    accent,
+                      padding:       '3px 8px',
+                      clipPath:      'polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 0 100%)',
+                    }}
+                  >
+                    {item.badge}
+                  </span>
+                )}
+              </div>
+
+              {/* Info */}
+              <div style={{ padding: '16px 18px 20px' }}>
+                <p style={{ fontFamily: mono, fontSize: 8, letterSpacing: '0.14em', color: grey[700], marginBottom: 6 }}>
+                  {item.category}
+                </p>
+                <p style={{ fontFamily: body, fontSize: 14, fontWeight: 600, color: white, lineHeight: 1.3, marginBottom: 12 }}>
+                  {item.title}
+                </p>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ fontFamily: display, fontSize: 24, letterSpacing: '0.04em', color: accent, lineHeight: 1 }}>
+                    {item.price}
+                  </span>
+                  <span
+                    style={{
+                      fontFamily:    mono,
+                      fontSize:      8,
+                      letterSpacing: '0.1em',
+                      color:         grey[700],
+                      border:        `1px solid rgba(255,255,255,0.07)`,
+                      padding:       '3px 8px',
+                    }}
+                  >
+                    VIEW ITEM →
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* CTA row */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 20, paddingTop: 8 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            {/* Payment placeholder badges */}
+            {['STRIPE', 'PAYPAL'].map((p) => (
+              <span
+                key={p}
+                style={{
+                  fontFamily:    mono,
+                  fontSize:      8,
+                  letterSpacing: '0.1em',
+                  color:         grey[700],
+                  border:        `1px solid rgba(255,255,255,0.08)`,
+                  padding:       '5px 12px',
+                  opacity:       0.6,
+                }}
+              >
+                {p} <span style={{ opacity: 0.5 }}>· COMING SOON</span>
+              </span>
+            ))}
+          </div>
+          <div style={{ display: 'flex', gap: 10 }}>
+            <Link href="/sign-up" className="cyber-btn" style={{ height: 46, padding: '0 26px', fontSize: 10 }}>
+              START SELLING →
+            </Link>
+            <Link href="/store" className="cyber-btn-ghost" style={{ height: 46, padding: '0 22px', fontSize: 10 }}>
+              BROWSE STORE
+            </Link>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ─── Season CTA ────────────────────────────────────────────────────────────────
 
 function SeasonCTA() {
@@ -1220,7 +1459,7 @@ function Footer() {
           <p style={{ fontFamily: mono, fontSize: 9, letterSpacing: '0.18em', color: grey[700], marginBottom: 16, textTransform: 'uppercase' }}>
             PLATFORM
           </p>
-          {['Leaderboard', 'Clubs', 'Challenges', 'Quests', 'Community'].map((link) => (
+          {['Leaderboard', 'Clubs', 'Challenges', 'Quests', 'Community', 'Store'].map((link) => (
             <div key={link} style={{ marginBottom: 10 }}>
               <Link
                 href={`/${link.toLowerCase()}`}
@@ -1336,6 +1575,7 @@ export default function LandingPage() {
       <FeaturesSection />
       <HowItWorks />
       <CommunitySection />
+      <StoreSection />
       <SeasonCTA />
       <Footer />
     </div>

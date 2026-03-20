@@ -4,6 +4,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { tokens } from '@/lib/design-tokens';
 import { PageTransition } from '@/components/layout/page-transition';
 import { StoreListingCard } from '@/components/store-listing-card';
+import { StoreHeroCTA } from './store-hero-cta';
 import styles from './store.module.css';
 
 export const metadata = { title: 'Pit Market — REVPIT' };
@@ -191,30 +192,7 @@ export default async function StorePage(props: { searchParams: SearchParams }) {
                 Members get access to exclusive listings.
               </p>
 
-              <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
-                {userId ? (
-                  <Link href="/store/new" className={styles.sellBtn}>
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-                      <path d="M6 1v10M1 6h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                    </svg>
-                    LIST AN ITEM
-                  </Link>
-                ) : (
-                  <Link href="/sign-in" className={styles.sellBtn}>
-                    SIGN IN TO SELL
-                  </Link>
-                )}
-
-                {isMember && (
-                  <Link
-                    href={exclusiveOnly ? '/store' : '/store?exclusive=1'}
-                    className={styles.chip}
-                    style={exclusiveOnly ? { background: accent, color: black, borderColor: accent } : {}}
-                  >
-                    ★ MEMBERS ONLY
-                  </Link>
-                )}
-              </div>
+              <StoreHeroCTA userId={userId ?? null} isMember={isMember} exclusiveOnly={exclusiveOnly} />
             </div>
 
             {/* Stats */}

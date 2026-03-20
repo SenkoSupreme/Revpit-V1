@@ -98,18 +98,17 @@ export function SidebarClient({ profile, role = 'user' }: { profile: SidebarProf
   const logoSection = (
     <div style={{ flexShrink: 0 }}>
       <div style={{ padding: '16px 20px 12px', display: 'flex', justifyContent: 'flex-start' }}>
-        <Link href="/dashboard" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+        <Link href={profile ? '/dashboard' : '/'} style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
           <Image
-            src="/images/logo-dark.png"
+            src="/images/side_nav_logo.png"
             alt="REVPIT"
-            width={1059}
-            height={812}
+            width={400}
+            height={100}
             style={{
               height:    '52px',
               width:     'auto',
               objectFit: 'contain',
               display:   'block',
-              filter:    'invert(1) drop-shadow(0 0 6px rgba(200,255,0,0.3))',
             }}
             priority
           />

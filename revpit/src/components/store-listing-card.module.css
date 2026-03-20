@@ -1,0 +1,163 @@
+/* ── Store Listing Card ────────────────────────────────────────────────────── */
+
+.card {
+  display: block;
+  text-decoration: none;
+  background: linear-gradient(135deg, #1C1B19 0%, #141312 100%);
+  border: 1px solid rgba(200,255,0,0.08);
+  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
+  overflow: hidden;
+  height: 100%;
+  position: relative;
+  transition: border-color 200ms ease, box-shadow 200ms ease, transform 200ms ease;
+}
+
+.card:hover {
+  border-color: rgba(200,255,0,0.25);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.5), 0 0 20px rgba(200,255,0,0.08);
+  transform: translateY(-2px);
+}
+
+/* Image area */
+.imageArea {
+  height: 180px;
+  background: #111110;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(200,255,0,0.06);
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 300ms ease;
+}
+
+.card:hover .image {
+  transform: scale(1.04);
+}
+
+.imagePlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 52px;
+  letter-spacing: 0.04em;
+  color: rgba(200,255,0,0.06);
+}
+
+/* Lock overlay */
+.lockOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  backdrop-filter: blur(8px);
+  background: rgba(14,13,12,0.55);
+  z-index: 2;
+}
+
+/* Sold overlay */
+.soldOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(14,13,12,0.7);
+  z-index: 2;
+}
+
+/* Category badge (top-left) */
+.categoryBadge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  clip-path: polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 0 100%);
+  z-index: 1;
+}
+
+/* Exclusive badge (top-right) */
+.exclusiveBadge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  color: #C8FF00;
+  background: rgba(200,255,0,0.1);
+  border: 1px solid rgba(200,255,0,0.2);
+  clip-path: polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 0 100%);
+  z-index: 1;
+}
+
+/* Content */
+.content {
+  padding: 16px;
+}
+
+.title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 17px;
+  letter-spacing: 0.04em;
+  color: #F5F4F0;
+  line-height: 1.05;
+  margin: 0 0 6px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.seller {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: #504F4B;
+  letter-spacing: 0.08em;
+  margin-bottom: 12px;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 12px;
+  border-top: 1px solid rgba(200,255,0,0.06);
+}
+
+.price {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px;
+  letter-spacing: 0.04em;
+  color: #C8FF00;
+  line-height: 1;
+}
+
+.conditionChip {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border: 1px solid #504F4B;
+  color: #898882;
+  clip-path: polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 0 100%);
+}

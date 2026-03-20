@@ -16,6 +16,8 @@ import {
   Settings,
   Menu,
   X,
+  ShoppingBag,
+  ShieldCheck,
 } from 'lucide-react';
 import styles from './sidebar-client.module.css';
 import { tokens } from '@/lib/design-tokens';
@@ -27,6 +29,8 @@ export type SidebarProfile = {
   score:       number;
   global_rank: number | null;
 } | null;
+
+export type SidebarRole = 'user' | 'moderator' | 'admin';
 
 type NavItem = {
   label: string;
@@ -41,6 +45,7 @@ const PUBLIC_NAV: NavItem[] = [
   { label: 'Leaderboard', href: '/leaderboard', icon: Trophy        },
   { label: 'Clubs',       href: '/clubs',       icon: Users         },
   { label: 'Community',   href: '/community',   icon: MessageSquare },
+  { label: 'Pit Market',  href: '/store',       icon: ShoppingBag   },
 ];
 
 /** Visible only when signed in */
@@ -55,11 +60,15 @@ const SETTINGS_NAV: NavItem[] = [
   { label: 'Settings', href: '/settings', icon: Settings },
 ];
 
+const ADMIN_NAV: NavItem[] = [
+  { label: 'Admin Panel', href: '/admin', icon: ShieldCheck },
+];
+
 const { white, grey } = tokens.colors;
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function SidebarClient({ profile }: { profile: SidebarProfile }) {
+export function SidebarClient({ profile, role = 'user' }: { profile: SidebarProfile; role?: SidebarRole }) {
   const pathname   = usePathname();
   const [mounted,    setMounted]    = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -151,6 +160,34 @@ export function SidebarClient({ profile }: { profile: SidebarProfile }) {
               </Link>
             );
           })}
+
+          {/* Admin / Moderator panel link */}
+          {(role === 'admin' || role === 'moderator') && (
+            <>
+              <div className={styles.navDivider} />
+              {ADMIN_NAV.map(({ label, href, icon: Icon }) => {
+                const active = isActive(href);
+                return (
+                  <Link
+                    key={href}
+                    href={href}
+                    className={active ? styles.navItemActive : styles.navItem}
+                    aria-current={active ? 'page' : undefined}
+                    style={{ color: active ? undefined : '#C8FF00', opacity: active ? 1 : 0.85 }}
+                  >
+                    <Icon size={15} strokeWidth={1.75} aria-hidden="true" />
+                    {label}
+                    {role === 'admin' && (
+                      <span style={{ fontSize: 7, fontFamily: 'var(--font-mono)', letterSpacing: '0.1em', color: '#C8FF00', background: 'rgba(200,255,0,0.1)', border: '1px solid rgba(200,255,0,0.25)', padding: '1px 5px', marginLeft: 'auto', clipPath: 'polygon(0 0, calc(100% - 3px) 0, 100% 3px, 100% 100%, 0 100%)' }}>ADMIN</span>
+                    )}
+                    {role === 'moderator' && (
+                      <span style={{ fontSize: 7, fontFamily: 'var(--font-mono)', letterSpacing: '0.1em', color: '#898882', border: '1px solid #504F4B', padding: '1px 5px', marginLeft: 'auto', clipPath: 'polygon(0 0, calc(100% - 3px) 0, 100% 3px, 100% 100%, 0 100%)' }}>MOD</span>
+                    )}
+                  </Link>
+                );
+              })}
+            </>
+          )}
         </>
       )}
     </nav>

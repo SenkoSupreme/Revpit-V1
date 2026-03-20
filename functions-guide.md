@@ -1,7 +1,7 @@
 # REVPIT Platform — Function Reference Guide
 
 > **Location of source code:** `c:\Users\SEN VON DOOM\OneDrive\Desktop\RVP_Proj\Revpit-V1\revpit\src`
-> **Last updated:** 2026-03-17 (AAA UI overhaul v3: PlayerCard component, useCountUp hook, globals.css design system additions, sidebar glow divider, dashboard/leaderboard page updates with podium, XP bar, score hero, loading skeleton updates)
+> **Last updated:** 2026-03-20 (Admin action log: migration 008, logAction helper in all mod actions, /admin/logs page with actor summary + filters, mod role-change protection hardened, Logs tab added to admin layout; Admin panel + role system: migration 007, roles.ts, /admin dashboard + store/community/users moderation, AppSidebar role-aware nav; Pit Market store: store_listings + club_members migration, StoreListingCard component, /store browse+filter page, /store/new create listing form with Supabase Storage image upload, /store/[id] detail + owner actions, store/actions.ts server actions)
 > **Rule:** This file must be updated whenever a new function, hook, server action, or component is added to the codebase.
 
 ---
@@ -19,6 +19,7 @@
 9. [Realtime Hooks](#9-realtime-hooks)
 10. [Middleware](#10-middleware)
 11. [Components](#11-components)
+12. [Store Actions (Pit Market)](#12-store-actions-pit-market)
 
 ---
 
@@ -851,13 +852,36 @@ export default function MyPageLayout({ children }: { children: React.ReactNode }
 **File:** `src/components/leaderboard-table.tsx`
 **Type:** Client Component
 
-Interactive leaderboard with search, filter tabs, tier badges, trend indicators, and avatar display.
+Interactive leaderboard rendered as a **card list** (not a table). Features cyberpunk angular `clip-path` cards, top-3 gold styling, elite neon-green tint, search filter, time-range tabs (All Time / This Week / This Month), tier badges, trend arrows, and avatar initials.
 
 **Props:**
 ```ts
-// Receives drivers array from server component
-// Internal state manages search query and active filter tab
+{ rows: LeaderboardRow[] }
 ```
+
+**`LeaderboardRow` type:**
+```ts
+type LeaderboardRow = {
+  rank:         number;
+  id:           string;
+  username:     string;
+  handle:       string;
+  avatarLetter: string;
+  carName:      string;
+  score:        number;
+  tier:         Tier;
+};
+```
+
+**Card styling rules:**
+- Rank 1 → gold avatar ring + gold score + gold rank number
+- Rank 2–3 → accent (neon) avatar ring + accent score + accent rank number
+- Tier `elite` (rank 4+) → subtle neon tint card background
+- All cards: `clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%)` angular cut
+
+**Internal state:**
+- `query` — search string filtering by `username` or `handle`
+- `activeTab` — `'All Time' | 'This Week' | 'This Month'` (filter tabs are UI-only; data not yet filtered by time on the backend)
 
 ---
 
@@ -944,6 +968,17 @@ Each section has its own `useActionState` and a `StatusBanner` that shows succes
 
 Manages feed state and integrates `useRealtimeDrops`. Renders a `NewDropsBanner` when new drops arrive and handles dismiss to prepend them to the visible feed.
 
+**Props:**
+```ts
+{
+  initialDrops:     Drop[];
+  pitId?:           string;   // scope realtime subscription to one pit
+  isAuthenticated?: boolean;  // default false — threads down to DropCard → VoteButtons
+}
+```
+
+`isAuthenticated` is computed once at the server page level via Clerk `auth()` and passed down as a prop to avoid running auth checks in every client component.
+
 ---
 
 ### `DropCard`
@@ -951,6 +986,14 @@ Manages feed state and integrates `useRealtimeDrops`. Renders a `NewDropsBanner`
 **Type:** Client Component
 
 Full drop display: title, body, media gallery, poll options with vote bars, author info with tier badge, tag chips, `VoteButtons`, reply count, share button. Handles build update callout and pinned drop banner.
+
+**Props:**
+```ts
+{
+  drop:             Drop;
+  isAuthenticated?: boolean;  // default false — forwarded to VoteButtons
+}
+```
 
 ---
 
@@ -979,12 +1022,18 @@ REV / IDLE vote buttons for drops. Uses `useOptimistic` for instant feedback whi
 **Props:**
 ```ts
 {
-  dropId:   string;
-  revCount: number;
-  idleCount: number;
-  userVote:  'rev' | 'idle' | null;
+  dropId:           string;
+  initialRevCount:  number;
+  initialIdleCount: number;
+  initialUserVote:  'rev' | 'idle' | null;
+  isAuthenticated?: boolean;  // default false
 }
 ```
+
+**Auth-gated behaviour:**
+- When `isAuthenticated === false`, clicking REV or IDLE redirects to `/sign-in` via `window.location.href` (no `useRouter` needed in a client component).
+- Buttons render at 55% opacity when not authenticated as a visual hint that interaction requires sign-in.
+- When authenticated, optimistic update fires immediately and `voteOnDrop` runs in a `useTransition`.
 
 ---
 
@@ -1037,6 +1086,26 @@ Interactive sidebar shell. Handles active nav state via `usePathname`, mobile ha
 { profile: SidebarProfile }
 // SidebarProfile = { username: string; score: number; global_rank: number | null } | null
 ```
+
+**Nav arrays (auth-gated):**
+```ts
+// Always visible — no sign-in required
+PUBLIC_NAV  = [Leaderboard, Clubs, Community]
+
+// Shown only when profile (user) is non-null
+AUTH_NAV    = [Dashboard, My Profile, Quests, Challenges]
+
+// Settings divider + link — only shown when signed in
+SETTINGS_NAV = [Settings]
+```
+
+**Composition logic:**
+```ts
+const allMainNav = profile ? [...AUTH_NAV, ...PUBLIC_NAV] : PUBLIC_NAV;
+// Settings rendered in a separate block below main nav, only when profile is not null
+```
+
+Unauthenticated visitors see only the three public nav items. Authenticated users see Dashboard, Profile, Quests, Challenges first, then the public items, then Settings below a divider.
 
 ---
 
@@ -1256,11 +1325,287 @@ Scoped CSS for `ClubCard` hover effect (border-color lift, `translateY(-3px)`, b
 
 ---
 
+---
+
+## 12. Store Actions (Pit Market)
+
+**File:** `src/app/store/actions.ts`
+
+### `createListing`
+**Type:** Server Action (`useActionState`)
+
+Creates a new `store_listings` row with `status = 'pending'` (awaits moderation). Reads image URLs from `formData.get('images')` as a JSON array string (max 5 URLs). Fetches the seller's username from `profiles` for denormalized display.
+
+| Param | Type | Notes |
+|---|---|---|
+| `_prev` | `ListingState` | Previous action state |
+| `formData` | `FormData` | `title`, `description`, `price`, `category`, `condition`, `is_exclusive`, `images` |
+
+**Returns:** `ListingState { error: string \| null }`
+**Side effects:** `revalidatePath('/store')`, redirects to `/store?submitted=1`
+
+```tsx
+const [state, action] = useActionState(createListing, { error: null });
+<form action={action}>...</form>
+```
+
+---
+
+### `uploadListingImage`
+**Type:** Server Action (direct call, not `useActionState`)
+
+Uploads a single image file to the `store-images` Supabase Storage bucket. Called client-side from `NewListingForm` before form submission. Max 5 MB, accepts jpeg/png/webp/gif. Stores at path `{clerkUserId}/{timestamp}_{random}.{ext}`.
+
+| Param | Type | Notes |
+|---|---|---|
+| `formData` | `FormData` | Must contain `file` key with a `File` object |
+
+**Returns:** `Promise<{ url?: string; error?: string }>`
+
+```tsx
+const fd = new FormData();
+fd.append('file', fileInput.files[0]);
+const { url, error } = await uploadListingImage(fd);
+```
+
+---
+
+### `markAsSold`
+**Type:** Server Action (direct call)
+
+Sets `is_sold = true` on a listing. Only the seller (matched by `seller_id === userId`) can call this.
+
+| Param | Type |
+|---|---|
+| `listingId` | `string` (UUID) |
+
+**Returns:** `Promise<{ error?: string }>`
+**Side effects:** `revalidatePath('/store')`, `revalidatePath('/store/[id]')`
+
+---
+
+### `deleteListing`
+**Type:** Server Action (direct call)
+
+Permanently deletes a listing. Only the seller can call this.
+
+| Param | Type |
+|---|---|
+| `listingId` | `string` (UUID) |
+
+**Returns:** `Promise<{ error?: string }>`
+**Side effects:** `revalidatePath('/store')`, redirects to `/store`
+
+---
+
+## Store Pages
+
+### `StorePage`
+**File:** `src/app/store/page.tsx`
+**Type:** Async Server Component
+
+Browse page at `/store`. Reads `searchParams` for filtering (`q`, `category`, `condition`, `exclusive`). Checks if current user is a member (subscribed or in any club) to determine `isMember`. Queries `store_listings` with `status = 'approved'`. Renders `<StoreListingCard>` grid.
+
+**Route:** `/store?q=&category=merch|car_parts&condition=new|like_new|used&exclusive=1`
+
+---
+
+### `NewListingPage`
+**File:** `src/app/store/new/page.tsx`
+**Type:** Async Server Component (auth guard) + `NewListingForm` client component
+
+Auth-gated at `/store/new`. Redirects to `/sign-in` if not authenticated. Renders `<NewListingForm>` which handles image uploads and listing submission.
+
+---
+
+### `NewListingForm`
+**File:** `src/app/store/new/new-listing-form.tsx`
+**Type:** Client Component (`'use client'`)
+
+Form for creating a new listing. Uses `useActionState(createListing, ...)`. Includes `<ImageUploader>` sub-component that calls `uploadListingImage` per file and tracks uploaded URLs in local state. Serialises URLs to JSON in a hidden input before submission. Supports an exclusive toggle (members-only listing).
+
+---
+
+### `ListingDetailPage`
+**File:** `src/app/store/[id]/page.tsx`
+**Type:** Async Server Component
+
+Detail page at `/store/[id]`. Returns 404 if listing not found or if listing is not approved and the viewer is not the seller. Checks membership for exclusive listing gate. Renders image gallery, price, badges, description, and `<ListingActions>`.
+
+---
+
+### `ListingActions`
+**File:** `src/app/store/[id]/listing-actions.tsx`
+**Type:** Client Component (`'use client'`)
+
+Renders the CTA section on the listing detail page. Shows a payment placeholder "CONTACT SELLER" button for buyers, or "MARK AS SOLD" / "DELETE LISTING" controls for the owner. Shows a members-gate UI for locked exclusive listings.
+
+| Prop | Type |
+|---|---|
+| `listing` | `StoreListing` |
+| `isOwner` | `boolean` |
+| `isLocked` | `boolean` |
+| `isSold` | `boolean` |
+
+---
+
+## Store Components
+
+### `StoreListingCard`
+**File:** `src/components/store-listing-card.tsx`
+**Type:** Server-safe React Component
+
+Card for a single listing shown in the browse grid. Renders image (or initial placeholder), category/condition badges, price, seller username, sold overlay, and lock overlay for exclusive listings when `isMember = false`.
+
+| Prop | Type |
+|---|---|
+| `listing` | `StoreListing` |
+| `isMember` | `boolean` |
+| `currentUserId` | `string \| null` |
+
+---
+
+## Database — Migration 006
+
+**File:** `supabase/migrations/006_store.sql`
+
+New tables and changes:
+
+| Table | Description |
+|---|---|
+| `store_listings` | Marketplace listings: seller_id (Clerk text), title, description, price, category, condition, images (text[]), is_exclusive, status (pending/approved/rejected), is_sold |
+| `club_members` | Maps Clerk user IDs to clubs: club_id (FK → clubs.id), member_id (text Clerk userId), role, joined_at |
+
+**Profiles change:** Adds `is_subscribed boolean DEFAULT false` column.
+
+**Storage:** Creates `store-images` Supabase Storage bucket (public, 5 MB limit, jpeg/png/webp/gif). Adds RLS policies for public read and authenticated upload.
+
+---
+
 ## Appendix: Adding New Code — Checklist
 
 When adding a new function, server action, hook, or component to this platform:
 
 1. **Server action?** → Use `createAdminClient()`, validate with `await auth()` first, add `'use server'` directive
+---
+
+## 13. Admin Panel + Role System
+
+### `getRoleForUser` / `getCurrentRole` / `requireModerator` / `requireAdmin`
+**File:** `src/lib/roles.ts`
+
+Role utilities. `getCurrentRole()` reads from `profiles.role` for the current auth session. Auto-syncs pre-grants from `role_assignments` table by Clerk email on first call if the stored role is 'user'. `requireModerator()` / `requireAdmin()` call `notFound()` if access is insufficient — use in layouts/pages to gate sections.
+
+| Export | Returns |
+|---|---|
+| `getCurrentRole()` | `Promise<'user' \| 'moderator' \| 'admin'>` |
+| `getRoleForUser(userId)` | Same, for an arbitrary Clerk userId |
+| `requireModerator()` | `Promise<Role>` — notFound() if not mod/admin |
+| `requireAdmin()` | `Promise<void>` — notFound() if not admin |
+| `syncUserRole(userId)` | `Promise<void>` — side-effect only (persists role) |
+
+---
+
+### Admin Server Actions
+**File:** `src/app/admin/actions.ts`
+
+All actions assert role before executing. Returns `{ error?: string }` or `SetRoleState`.
+
+| Action | Access | Description |
+|---|---|---|
+| `approveListing(id)` | Mod/Admin | Sets listing status = 'approved' |
+| `rejectListing(id)` | Mod/Admin | Sets listing status = 'rejected' |
+| `adminDeleteListing(id)` | Mod/Admin | Permanently deletes a listing |
+| `adminDeleteDrop(id)` | Mod/Admin | Deletes a community drop |
+| `adminDeleteReply(id)` | Mod/Admin | Deletes a reply |
+| `setUserRole(prev, formData)` | Admin only | Sets profile.role, upserts role_assignments |
+| `grantRoleByEmail(prev, formData)` | Admin only | Pre-grants a role to an email |
+
+---
+
+### Admin Pages
+
+| Page | Path | Access | Description |
+|---|---|---|---|
+| `AdminLayout` | `src/app/admin/layout.tsx` | Mod/Admin | Gate + sub-nav tabs (Overview / Store / Community / Users) |
+| `AdminOverviewPage` | `src/app/admin/page.tsx` | Mod/Admin | Stats grid (users, listings, drops, clubs), alert for pending listings, recent activity feeds |
+| `AdminStorePage` | `src/app/admin/store/page.tsx` | Mod/Admin | Filterable table of all listings. Filter by `?status=pending\|approved\|rejected\|all`. Inline approve/reject/delete via `StoreModActions` |
+| `StoreModActions` | `src/app/admin/store/store-mod-actions.tsx` | Client | Approve / Reject / Delete buttons for a single listing row |
+| `AdminCommunityPage` | `src/app/admin/community/page.tsx` | Mod/Admin | Table of all community drops with delete action |
+| `CommunityModActions` | `src/app/admin/community/community-mod-actions.tsx` | Client | Delete button (with confirm) for a drop row |
+| `AdminUsersPage` | `src/app/admin/users/page.tsx` | Mod (view) / Admin (edit) | Lists all users, elevated roles, and pre-grant role assignments |
+| `SetRoleForm` | `src/app/admin/users/user-role-forms.tsx` | Client | Inline form to change a user's role (admin only) |
+| `GrantEmailForm` | `src/app/admin/users/user-role-forms.tsx` | Client | Pre-grant a role to an email address (admin only) |
+
+---
+
+## Database — Migration 007
+
+**File:** `supabase/migrations/007_admin_roles.sql`
+
+| Change | Description |
+|---|---|
+| `profiles.role` | TEXT DEFAULT 'user' CHECK IN ('user', 'moderator', 'admin') |
+| `profiles.email` | TEXT nullable — stored for role lookup |
+| `role_assignments` | email (UNIQUE) → role mapping for pre-grants |
+| Seed | `brija.main@gmail.com` pre-granted as 'admin' |
+
+**Role sync flow:** On every `getRoleForUser()` call, if profile.role = 'user', the system checks `role_assignments` by email. If a match is found, the profile is promoted and the role is persisted.
+
+---
+
+## Database — Migration 008
+
+**File:** `supabase/migrations/008_admin_logs.sql`
+
+Creates `admin_logs` table — append-only record of every moderation action.
+
+| Column | Type | Description |
+|---|---|---|
+| `actor_id` | text | Clerk userId of who acted |
+| `actor_username` | text | Denormalised username at time of action |
+| `actor_email` | text | Denormalised email at time of action |
+| `actor_role` | text | Role at time of action (admin / moderator) |
+| `action` | text | Enum: APPROVE_LISTING, REJECT_LISTING, DELETE_LISTING, DELETE_DROP, DELETE_REPLY, SET_ROLE, GRANT_ROLE_BY_EMAIL |
+| `target_type` | text | listing / drop / reply / user |
+| `target_id` | text | UUID of the target row |
+| `target_label` | text | Human-readable description |
+| `created_at` | timestamptz | Indexed DESC for fast log queries |
+
+---
+
+### `logAction` (internal helper)
+**File:** `src/app/admin/actions.ts`
+
+Private async helper called at the end of every admin/mod action. Fetches the actor's `username`, `email`, and `role` from `profiles` and inserts a row into `admin_logs`. Never throws — log failures do not block the action.
+
+---
+
+### `AdminLogsPage`
+**File:** `src/app/admin/logs/page.tsx`
+**Type:** Async Server Component
+
+Action log page at `/admin/logs`. Shows all moderation actions in reverse-chronological order with:
+- **Actor:** username (linked to filtered view), email, role badge
+- **Action:** colour-coded badge per action type
+- **Target:** human-readable description + target type
+- **When:** relative time (e.g. "3h ago") with tooltip of exact timestamp
+
+Supports `?actor=username` and `?action=ACTION_KEY` query filters. Shows a **top actors summary** strip of up to 6 moderators with action counts. Moderators cannot access the Users tab to change roles (UI gated by `isAdmin` + server actions guarded by `assertAdmin()`).
+
+---
+
+### Moderator role-change protection
+All role-altering actions (`setUserRole`, `grantRoleByEmail`) call `assertAdmin()` which throws with message "Admin access required. Moderators cannot alter roles." on any non-admin attempt. This is enforced at the server action level regardless of what the UI shows.
+
+---
+
+## 2. Supabase Admin Client
+**File:** `src/lib/supabase/admin.ts`
+**Note:** All server-side DB access must use `createAdminClient()`. Never use `createClient()` from server.ts.
+
+---
+
 2. **Server component with DB?** → Use `createAdminClient()`, never `createClient()` from server.ts
 3. **Client component?** → Add `'use client'` directive; use `useActionState` for forms, `useOptimistic` for instant UI
 4. **New page?** → Create a `layout.tsx` in the same folder that wraps `<AppSidebar />` + `<main>`
